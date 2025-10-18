@@ -9,9 +9,10 @@ SPDX-License-Identifier: GPL-3.0-or-later
 ## :clap: Project creators
 
 - AntwortEinesLebens
-
-## :heart: Contributors
-
 - Blast
 - serial154
 - umbh
+
+## :heart: Contributors
+
+No one for now
