@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: 2025 The MALINA development team
+#
+# SPDX-License-Identifier: CC0-1.0
+
+[project]
+name = "malina-agent"
+version = "0.1.0"
+description = "The MALINA agent that run inside VMs"
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+malina-agent = "malina_agent:main"
+
+[build-system]
+requires = ["uv_build>=0.9.11,<0.10.0"]
+build-backend = "uv_build"
