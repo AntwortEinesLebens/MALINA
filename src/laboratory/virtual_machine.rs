@@ -2,14 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use hardware::Hardware;
+use operating_system::OperatingSystem;
 use serde::Deserialize;
 use std::path::PathBuf;
 
 pub mod hardware;
 pub mod operating_system;
-
-use hardware::Hardware;
-use operating_system::OperatingSystem;
 
 #[derive(Deserialize)]
 pub struct VirtualMachine {
