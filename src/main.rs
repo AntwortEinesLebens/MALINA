@@ -2,6 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-fn main() {
-    println!("Hello, world!");
+use clap::Parser;
+use cli::Arguments;
+use miette::Result;
+
+mod cli;
+mod laboratory;
+
+fn main() -> Result<()> {
+    Arguments::parse().run()
 }
