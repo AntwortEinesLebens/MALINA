@@ -15,7 +15,7 @@ keywords = ["malware", "laboratory", "blueteam", "hypervisors"]
 categories = ["command-line-utilities", "security", "virtualization"]
 
 [dependencies]
-toml = { version = "0.9.11" }
+toml = { version = "1.0.1" }
 clap = { version = "4.5.54", features = ["derive"] }
 serde = { version = "1.0.228", features = ["derive"] }
 virt = { version = "0.4.3" }
