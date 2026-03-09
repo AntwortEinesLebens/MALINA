@@ -5,10 +5,10 @@
 pub use crate::commands::Commands;
 use clap::Parser;
 
-/// MALINA - Malware Analysis Laboratory Infrastructure for Networked Isolated Architectures
-#[derive(Parser, Debug)]
+#[derive(Parser)]
 #[command(name = "malina")]
-#[command(author, version, about, long_about = None)]
+#[command(author, version, about)]
+#[command(arg_required_else_help = true)]
 pub struct Cli {
     /// Enable verbose output
     #[arg(short, long, global = true)]
