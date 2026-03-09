@@ -6,10 +6,30 @@
 name = "malina"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85.0"                                                                       # Needs to be checked later
+rust-version = "1.85.0"
+authors = ["The MALINA development team"]
 description = "Create replicable and unique malware analysis laboratories from configuration"
 documentation = "https://AntwortEinesLebens.github.io/MALINA/"
 repository = "https://github.com/AntwortEinesLebens/MALINA/"
+readme = "README.md"
 license = "GPL-3.0-or-later"
-keywords = ["malware", "laboratory", "blueteam", "hypervisors"]
-categories = ["command-line-utilities", "security", "virtualization"]
+keywords = [
+  "malware",
+  "analysis",
+  "laboratory",
+  "security",
+  "cli",
+  "blueteam",
+  "hypervisors",
+]
+categories = [
+  "command-line-utilities",
+  "development-tools",
+  "security",
+  "virtualization",
+]
+
+[dependencies]
+clap = { version = "=4.5.60", features = ["derive"] }
+clap_complete = { version = "=4.5.66" }
+miette = { version = "=7.6.0", features = ["fancy"] }
