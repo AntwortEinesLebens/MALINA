@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use clap::Subcommand;
+pub use laboratories::Laboratories;
 use std::path::PathBuf;
 
 pub mod deploy;
@@ -37,28 +38,4 @@ pub enum Commands {
     /// Manage deployed laboratories
     #[command(subcommand)]
     Laboratories(Laboratories),
-}
-
-#[derive(Subcommand, Debug)]
-pub enum Laboratories {
-    /// List all deployed laboratories
-    List,
-
-    /// Start a stopped laboratory
-    Start {
-        /// Name of the laboratory to start
-        name: String,
-    },
-
-    /// Stop a running laboratory
-    Stop {
-        /// Name of the laboratory to stop
-        name: String,
-    },
-
-    /// Destroy a laboratory
-    Destroy {
-        /// Name of the laboratory to destroy
-        name: String,
-    },
 }
