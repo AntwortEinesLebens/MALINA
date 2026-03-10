@@ -16,32 +16,32 @@ pub mod validate;
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    /// Generate shell completion scripts
+    #[command(about = "Generate shell completion scripts")]
     #[command(subcommand)]
     Completions(Completions),
 
-    /// Validate a laboratory configuration file
+    #[command(about = "Validate a laboratory configuration file")]
     Validate {
-        /// Path to the TOML configuration file
+        #[arg(help = "Path to the TOML configuration file")]
         path: PathBuf,
     },
 
-    /// Deploy a laboratory from configuration
+    #[command(about = "Deploy a laboratory from configuration")]
     Deploy {
-        /// Path to the TOML configuration file
+        #[arg(help = "Path to the TOML configuration file")]
         path: PathBuf,
     },
 
-    /// Check system readiness for laboratory deployment
+    #[command(about = "Check system readiness for laboratory deployment")]
     Doctor,
 
-    /// Diagnose failed or partial laboratory deployments
+    #[command(about = "Diagnose failed or partial laboratory deployments")]
     Diagnose {
-        /// Name of the laboratory to diagnose
+        #[arg(help = "Name of the laboratory to diagnose")]
         name: String,
     },
 
-    /// Manage deployed laboratories
+    #[command(about = "Manage deployed laboratories")]
     #[command(subcommand)]
     Laboratories(Laboratories),
 }

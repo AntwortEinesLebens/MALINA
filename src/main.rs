@@ -4,7 +4,7 @@
 
 use crate::{
     cli::Cli,
-    commands::{completions, deploy, diagnose, doctor, laboratories, validate, Commands},
+    commands::{Commands, completions, deploy, diagnose, doctor, laboratories, validate},
     logger::Logger,
 };
 use clap::Parser;

@@ -12,24 +12,24 @@ pub mod stop;
 
 #[derive(Subcommand, Debug)]
 pub enum Laboratories {
-    /// List all deployed laboratories
+    #[command(about = "List all deployed laboratories")]
     List,
 
-    /// Start a stopped laboratory
+    #[command(about = "Start a stopped laboratory")]
     Start {
-        /// Name of the laboratory to start
+        #[arg(help = "Name of the laboratory to start")]
         name: String,
     },
 
-    /// Stop a running laboratory
+    #[command(about = "Stop a running laboratory")]
     Stop {
-        /// Name of the laboratory to stop
+        #[arg(help = "Name of the laboratory to stop")]
         name: String,
     },
 
-    /// Destroy a laboratory
+    #[command(about = "Destroy a laboratory")]
     Destroy {
-        /// Name of the laboratory to destroy
+        #[arg(help = "Name of the laboratory to destroy")]
         name: String,
     },
 }

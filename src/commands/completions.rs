@@ -10,20 +10,19 @@ use std::io;
 
 #[derive(Subcommand, Debug)]
 pub enum Completions {
-    /// Generate bash shell completion
+    #[command(about = "Generate bash shell completion")]
     Bash,
 
-    /// Generate elvish shell completion
+    #[command(about = "Generate elvish shell completion")]
     Elvish,
 
-    /// Generate fish shell completion
+    #[command(about = "Generate fish shell completion")]
     Fish,
 
-    /// Generate powershell shell completion
-    #[command(name = "powershell")]
+    #[command(name = "powershell", about = "Generate powershell shell completion")]
     PowerShell,
 
-    /// Generate zsh shell completion
+    #[command(about = "Generate zsh shell completion")]
     Zsh,
 }
 

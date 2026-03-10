@@ -10,16 +10,19 @@ use clap::{ArgAction, Parser};
 #[command(author, version, about)]
 #[command(arg_required_else_help = true)]
 pub struct Cli {
-    /// Increase output verbosity (can be used multiple times: -v, -vv, -vvv)
-    #[arg(short, long, action = ArgAction::Count, global = true)]
+    #[arg(short, long, action = ArgAction::Count, global = true, help = "Increase output verbosity (can be used multiple times: -v, -vv, -vvv)")]
     pub verbose: u8,
 
-    /// Enable quiet output (suppress non-essential messages)
-    #[arg(short, long, global = true, conflicts_with = "verbose")]
+    #[arg(
+        short,
+        long,
+        global = true,
+        conflicts_with = "verbose",
+        help = "Enable quiet output (suppress non-essential messages)"
+    )]
     pub quiet: bool,
 
-    /// Disable colored output
-    #[arg(long, global = true)]
+    #[arg(long, global = true, help = "Disable colored output")]
     pub no_color: bool,
 
     #[command(subcommand)]
