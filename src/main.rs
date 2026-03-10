@@ -12,6 +12,7 @@ use miette::{MietteHandlerOpts, Result};
 
 mod cli;
 mod commands;
+mod errors;
 mod logger;
 
 fn main() -> Result<()> {
