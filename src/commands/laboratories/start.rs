@@ -2,10 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::logger::Logger;
 use miette::Result;
 
 pub fn execute(name: String) -> Result<()> {
-    println!("Starting laboratory: {}", name);
+    Logger::print(&format!("Starting laboratory: {}", name));
+    Logger::info(&format!("Laboratory: {}", name));
+    Logger::debug("Initializing virtual machines");
 
     Ok(())
 }

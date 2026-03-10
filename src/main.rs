@@ -2,16 +2,33 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::cli::Cli;
-use crate::commands::{deploy, diagnose, doctor, laboratories, validate, Commands};
+use crate::{
+    cli::Cli,
+    commands::{Commands, deploy, diagnose, doctor, laboratories, validate},
+    logger::Logger,
+};
 use clap::Parser;
-use miette::Result;
+use miette::{MietteHandlerOpts, Result};
 
 mod cli;
 mod commands;
+mod logger;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
+
+    Logger::initialize(cli.quiet, cli.verbose, cli.no_color);
+
+    miette::set_hook(Box::new(move |_| {
+        let mut handler = MietteHandlerOpts::new();
+
+        if cli.no_color {
+            handler = handler.color(false);
+        }
+
+        Box::new(handler.build())
+    }))
+    .map_err(|error| miette::miette!("Failed to initialize miette error handler: {}", error))?;
 
     match cli.command {
         Commands::Validate { path } => validate::execute(path)?,
