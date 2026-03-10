@@ -3,9 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use clap::Subcommand;
+pub use completions::Completions;
 pub use laboratories::Laboratories;
 use std::path::PathBuf;
 
+pub mod completions;
 pub mod deploy;
 pub mod diagnose;
 pub mod doctor;
@@ -14,6 +16,10 @@ pub mod validate;
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
+    /// Generate shell completion scripts
+    #[command(subcommand)]
+    Completions(Completions),
+
     /// Validate a laboratory configuration file
     Validate {
         /// Path to the TOML configuration file

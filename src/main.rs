@@ -4,7 +4,7 @@
 
 use crate::{
     cli::Cli,
-    commands::{Commands, deploy, diagnose, doctor, laboratories, validate},
+    commands::{completions, deploy, diagnose, doctor, laboratories, validate, Commands},
     logger::Logger,
 };
 use clap::Parser;
@@ -32,6 +32,7 @@ fn main() -> Result<()> {
     .map_err(|error| miette::miette!("Failed to initialize miette error handler: {}", error))?;
 
     match cli.command {
+        Commands::Completions(subcommand) => completions::execute(subcommand)?,
         Commands::Validate { path } => validate::execute(path)?,
         Commands::Deploy { path } => deploy::execute(path)?,
         Commands::Doctor => doctor::execute()?,
