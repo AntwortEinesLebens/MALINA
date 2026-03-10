@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2025 The MALINA development team
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use env_logger::{Builder, WriteStyle};
 use log::{Level, LevelFilter};
 use owo_colors::OwoColorize;
