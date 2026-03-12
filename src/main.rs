@@ -4,7 +4,10 @@
 
 use crate::{
     cli::Cli,
-    commands::{Commands, completions, deploy, diagnose, doctor, laboratories, validate},
+    commands::{
+        Commands, completions, deploy, diagnose, doctor, laboratories as laboratories_command,
+        validate,
+    },
     logger::Logger,
 };
 use clap::Parser;
@@ -13,6 +16,7 @@ use miette::{MietteHandlerOpts, Result};
 mod cli;
 mod commands;
 mod errors;
+mod laboratories;
 mod logger;
 
 fn main() -> Result<()> {
@@ -37,7 +41,7 @@ fn main() -> Result<()> {
         Commands::Deploy { path } => deploy::execute(path)?,
         Commands::Doctor => doctor::execute()?,
         Commands::Diagnose { name } => diagnose::execute(name)?,
-        Commands::Laboratories(subcommand) => laboratories::execute(subcommand)?,
+        Commands::Laboratories(subcommand) => laboratories_command::execute(subcommand)?,
     }
 
     Ok(())
