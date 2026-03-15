@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::{errors::Validation, laboratories::Configuration, logger::Logger};
-use miette::Result;
+use crate::{errors::Validation, laboratories::Configuration, logger::Logger, validations};
+use miette::{NamedSource, Result};
 use std::{fs, io::ErrorKind, path::PathBuf};
 
 pub fn execute(path: PathBuf) -> Result<()> {
@@ -23,7 +23,7 @@ pub fn execute(path: PathBuf) -> Result<()> {
         .into());
     }
 
-    let content = fs::read_to_string(&path).map_err(|error| {
+    let source_code = fs::read_to_string(&path).map_err(|error| {
         let error_kind = error.kind();
 
         if error_kind == ErrorKind::InvalidData {
@@ -38,8 +38,16 @@ pub fn execute(path: PathBuf) -> Result<()> {
         }
     })?;
 
-    let config: Configuration = toml::from_str(&content)
-        .map_err(|error| Validation::InvalidTomlSyntax { source: error })?;
+    let source_name = path.display().to_string();
+
+    let config: Configuration =
+        toml::from_str(&source_code).map_err(|error| Validation::InvalidTomlSyntax {
+            message: error.message().to_string(),
+            source_code: NamedSource::new(source_name.clone(), source_code.clone()),
+            span: error.span().map(Into::into),
+        })?;
+
+    validations::validate_all_machines(&config.machines, &source_name, &source_code)?;
 
     Logger::print(&format!(
         "Configuration is valid - Laboratory: {}",

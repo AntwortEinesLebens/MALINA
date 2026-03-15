@@ -3,19 +3,21 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use serde::Deserialize;
+use toml::Spanned;
 
 #[derive(Debug, Deserialize)]
 pub struct Machine {
-    pub identifier: String,
+    pub identifier: Spanned<String>,
     pub name: String,
     pub hardware: Hardware,
     pub operating_system: OperatingSystem,
 }
 
 #[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct Hardware {
-    pub cpus: u32,
-    pub memory_megabyte: u32,
+    pub cpus: Spanned<u32>,
+    pub memory_megabyte: Spanned<u32>,
 }
 
 #[derive(Debug, Deserialize)]

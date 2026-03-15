@@ -2,9 +2,6 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use serde::Deserialize;
+pub use hardware::validate_all_machines;
 
-#[derive(Debug, Deserialize)]
-pub struct Laboratory {
-    pub name: String,
-}
+pub mod hardware;
