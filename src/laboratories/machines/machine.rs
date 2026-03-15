@@ -16,7 +16,6 @@ pub struct Machine {
 pub struct Hardware {
     pub cpus: u32,
     pub memory_megabyte: u32,
-    pub disk_gigabyte: u32,
 }
 
 #[derive(Debug, Deserialize)]
