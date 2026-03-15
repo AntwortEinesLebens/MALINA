@@ -30,8 +30,8 @@ categories = [
 ]
 
 [dependencies]
-clap = { version = "=4.5.60", features = ["derive"] }
-clap_complete = { version = "=4.5.66" }
+clap = { version = "=4.6.0", features = ["derive"] }
+clap_complete = { version = "=4.6.0" }
 miette = { version = "=7.6.0", features = ["fancy"] }
 thiserror = { version = "=2.0.18" }
 log = { version = "=0.4.29" }
@@ -39,4 +39,4 @@ env_logger = { version = "=0.11.9" }
 owo-colors = { version = "=4.3.0", features = ["supports-colors"] }
 serde = { version = "=1.0.228", features = ["derive"] }
 toml = { version = "=1.0.6" }
-num_cpus = { version = "=1.16.0" }
+num_cpus = { version = "=1.17.0" }
