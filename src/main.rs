@@ -18,7 +18,6 @@ mod commands;
 mod errors;
 mod laboratories;
 mod logger;
-mod validations;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();

@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::{errors::Validation, laboratories::Configuration, logger::Logger, validations};
+use crate::{errors::Validation, laboratories::Configuration, logger::Logger};
 use miette::{NamedSource, Result};
 use std::{fs, io::ErrorKind, path::PathBuf};
 
@@ -40,18 +40,18 @@ pub fn execute(path: PathBuf) -> Result<()> {
 
     let source_name = path.display().to_string();
 
-    let config: Configuration =
+    let configuration: Configuration =
         toml::from_str(&source_code).map_err(|error| Validation::InvalidTomlSyntax {
             message: error.message().to_string(),
             source_code: NamedSource::new(source_name.clone(), source_code.clone()),
             span: error.span().map(Into::into),
         })?;
 
-    validations::validate_all_machines(&config.machines, &source_name, &source_code)?;
+    configuration.validate(&source_name, &source_code)?;
 
     Logger::print(&format!(
         "Configuration is valid - Laboratory: {}",
-        config.laboratory.name
+        configuration.laboratory.name
     ));
 
     Ok(())
