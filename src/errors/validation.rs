@@ -86,4 +86,20 @@ pub enum Validation {
         requested: u32,
         host_cpus: usize,
     },
+
+    #[diagnostic(help(
+        "Reduce memory to {host_memory_megabyte} MB or less. This host exposes {host_memory_megabyte} MB of total memory."
+    ))]
+    #[error(
+        "Machine '{machine_identifier}' requests more memory than available: {requested} MB (host has {host_memory_megabyte} MB)"
+    )]
+    ExcessiveMemory {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`memory_megabyte` exceeds the host limit")]
+        span: SourceSpan,
+        machine_identifier: String,
+        requested: u32,
+        host_memory_megabyte: u64,
+    },
 }

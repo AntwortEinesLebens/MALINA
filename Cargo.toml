@@ -39,4 +39,4 @@ env_logger = { version = "=0.11.9" }
 owo-colors = { version = "=4.3.0", features = ["supports-colors"] }
 serde = { version = "=1.0.228", features = ["derive"] }
 toml = { version = "=1.0.6" }
-num_cpus = { version = "=1.17.0" }
+sysinfo = { version = "=0.38.4" }
