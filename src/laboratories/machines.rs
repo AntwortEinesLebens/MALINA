@@ -5,3 +5,4 @@
 pub mod hardware;
 pub mod machine;
 pub mod operating_system;
+pub mod user;

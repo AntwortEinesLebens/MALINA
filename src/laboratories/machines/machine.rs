@@ -3,13 +3,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::{
-    errors::Validation,
+    errors::{Validation, validation},
     laboratories::machines::{
         hardware::{Hardware, HostResources},
         operating_system::OperatingSystem,
+        user::User,
     },
 };
-use std::path::Path;
+use miette::NamedSource;
+use std::{collections::HashSet, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
 #[derive(Debug)]
@@ -18,6 +20,7 @@ pub struct Machine {
     pub name: String,
     pub hardware: Hardware,
     pub operating_system: OperatingSystem,
+    pub users: Spanned<Vec<User>>,
 }
 
 impl<'de> Deserialize<'de> for Machine {
@@ -27,6 +30,7 @@ impl<'de> Deserialize<'de> for Machine {
         let name = table.required("name")?;
         let hardware = table.required("hardware")?;
         let operating_system = table.required("operating_system")?;
+        let users = table.required_s::<Vec<User>>("users")?;
         table.finalize(None)?;
 
         Ok(Self {
@@ -34,6 +38,7 @@ impl<'de> Deserialize<'de> for Machine {
             name,
             hardware,
             operating_system,
+            users,
         })
     }
 }
@@ -47,10 +52,36 @@ impl Machine {
         host_resources: &HostResources,
     ) -> Result<(), Validation> {
         let identifier = self.identifier.value.as_str();
+
         self.hardware
             .validate(identifier, source_name, source_code, host_resources)?;
         self.operating_system
             .validate(identifier, source_name, source_code, parent)?;
+
+        if self.users.value.is_empty() {
+            return Err(Validation::EmptyUsers {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.users.span),
+                machine_identifier: identifier.to_owned(),
+            });
+        }
+
+        let mut seen_usernames = HashSet::with_capacity(self.users.value.len());
+
+        for user in &self.users.value {
+            user.validate(identifier, source_name, source_code)?;
+
+            let normalized_username = user.username.value.trim();
+
+            if !seen_usernames.insert(normalized_username) {
+                return Err(Validation::DuplicateUsername {
+                    source_code: NamedSource::new(source_name, source_code.to_owned()),
+                    span: validation::to_source_span(user.username.span),
+                    machine_identifier: identifier.to_owned(),
+                    username: normalized_username.to_owned(),
+                });
+            }
+        }
 
         Ok(())
     }

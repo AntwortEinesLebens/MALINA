@@ -136,6 +136,47 @@ pub enum Validation {
         machine_identifier: String,
         path: String,
     },
+
+    #[diagnostic(help("Provide a non-empty username for the user entry."))]
+    #[error("Machine '{machine_identifier}' has a user with an empty username")]
+    EmptyUsername {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`username` must not be empty")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
+    #[diagnostic(help("Provide a non-empty password for the user entry."))]
+    #[error("Machine '{machine_identifier}' has a user with an empty password")]
+    EmptyPassword {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`password` must not be empty")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
+    #[diagnostic(help("Declare at least one `[[machines.users]]` entry for the machine."))]
+    #[error("Machine '{machine_identifier}' must declare at least one user")]
+    EmptyUsers {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("declare at least one user for this machine")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
+    #[diagnostic(help("Give each user a unique `username` within the machine configuration."))]
+    #[error("Machine '{machine_identifier}' declares the username '{username}' more than once")]
+    DuplicateUsername {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("duplicate `username` in this machine")]
+        span: SourceSpan,
+        machine_identifier: String,
+        username: String,
+    },
 }
 
 impl Validation {
@@ -196,7 +237,7 @@ impl Validation {
                 }
             }
             TomlErrorKind::Wanted { expected, found } => {
-                format!("invalid type: {found}, expected {expected}")
+                format!("found {found}, expected {expected}")
             }
             _ => error.to_string(),
         }
