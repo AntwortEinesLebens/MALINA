@@ -177,6 +177,33 @@ pub enum Validation {
         machine_identifier: String,
         username: String,
     },
+
+    #[diagnostic(help("Remove empty package names from the `install` list."))]
+    #[error("Machine '{machine_identifier}' has an empty package name in `install`")]
+    EmptyPackageName {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("package name must not be empty")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
+    #[diagnostic(help(
+        "Use a compatible package manager for {distribution}: {compatible_managers}"
+    ))]
+    #[error(
+        "Machine '{machine_identifier}' has incompatible package manager '{manager}' for {distribution}"
+    )]
+    IncompatibleManager {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("use a compatible manager for this operating system")]
+        span: SourceSpan,
+        machine_identifier: String,
+        manager: String,
+        distribution: String,
+        compatible_managers: String,
+    },
 }
 
 impl Validation {
@@ -218,8 +245,8 @@ impl Validation {
     fn format_toml_error(error: &TomlError) -> String {
         match &error.kind {
             TomlErrorKind::UnexpectedKeys { keys, expected } => {
-                let actual = Self::format_quoted(keys.iter().map(|(name, _)| name.as_str()));
-                let expected = Self::format_quoted(expected.iter().map(String::as_str));
+                let actual = format_quoted(keys.iter().map(|(name, _)| name.as_str()));
+                let expected = format_quoted(expected.iter().map(String::as_str));
 
                 if keys.len() == 1 {
                     format!("unknown field {actual}, expected one of {expected}")
@@ -229,7 +256,7 @@ impl Validation {
             }
             TomlErrorKind::MissingField(field) => format!("missing field `{field}`"),
             TomlErrorKind::UnexpectedValue { expected, value } => {
-                let expected = Self::format_quoted(expected.iter().copied());
+                let expected = format_quoted(expected.iter().copied());
 
                 match value {
                     Some(value) => format!("unknown variant `{value}`, expected {expected}"),
@@ -242,22 +269,22 @@ impl Validation {
             _ => error.to_string(),
         }
     }
+}
 
-    fn format_quoted<'a>(items: impl IntoIterator<Item = &'a str>) -> String {
-        let items = items
-            .into_iter()
-            .map(|item| format!("`{item}`"))
-            .collect::<Vec<_>>();
+pub fn format_quoted<'a>(items: impl IntoIterator<Item = &'a str>) -> String {
+    let items = items
+        .into_iter()
+        .map(|item| format!("`{item}`"))
+        .collect::<Vec<_>>();
 
-        match items.as_slice() {
-            [] => "(none)".to_owned(),
-            [item] => item.clone(),
-            [left, right] => format!("{left} or {right}"),
-            _ => {
-                let last = items.last().cloned().expect("items is not empty");
+    match items.as_slice() {
+        [] => "(none)".to_owned(),
+        [item] => item.clone(),
+        [left, right] => format!("{left} or {right}"),
+        _ => {
+            let last = items.last().cloned().expect("items is not empty");
 
-                format!("{} or {last}", items[..items.len() - 1].join(", "))
-            }
+            format!("{} or {last}", items[..items.len() - 1].join(", "))
         }
     }
 }

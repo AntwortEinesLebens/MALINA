@@ -7,6 +7,7 @@ use crate::{
     laboratories::machines::{
         hardware::{Hardware, HostResources},
         operating_system::OperatingSystem,
+        packages::Packages,
         user::User,
     },
 };
@@ -21,6 +22,7 @@ pub struct Machine {
     pub hardware: Hardware,
     pub operating_system: OperatingSystem,
     pub users: Spanned<Vec<User>>,
+    pub packages: Option<Packages>,
 }
 
 impl<'de> Deserialize<'de> for Machine {
@@ -31,6 +33,7 @@ impl<'de> Deserialize<'de> for Machine {
         let hardware = table.required("hardware")?;
         let operating_system = table.required("operating_system")?;
         let users = table.required_s::<Vec<User>>("users")?;
+        let packages = table.optional("packages");
         table.finalize(None)?;
 
         Ok(Self {
@@ -39,6 +42,7 @@ impl<'de> Deserialize<'de> for Machine {
             hardware,
             operating_system,
             users,
+            packages,
         })
     }
 }
@@ -58,6 +62,10 @@ impl Machine {
         self.operating_system
             .validate(identifier, source_name, source_code, parent)?;
         self.validate_users(identifier, source_name, source_code)?;
+
+        if let Some(packages) = &self.packages {
+            packages.validate(&self.operating_system, identifier, source_name, source_code)?;
+        }
 
         Ok(())
     }

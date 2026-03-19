@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::errors::{Validation, validation};
+use crate::{
+    errors::{Validation, format_quoted, validation},
+    laboratories::machines::packages::Manager,
+};
 use miette::NamedSource;
 use std::path::{Path, PathBuf};
 use toml_span::{
@@ -144,6 +147,38 @@ impl OperatingSystem {
         table.finalize(None)?;
 
         Ok(Self::Windows { version, image })
+    }
+
+    pub fn distribution_name(&self) -> &'static str {
+        match self {
+            Self::Linux {
+                distribution: LinuxDistribution::Debian(_),
+                ..
+            } => "debian",
+            Self::Linux {
+                distribution: LinuxDistribution::Fedora(_),
+                ..
+            } => "fedora",
+            Self::Windows { .. } => "windows",
+        }
+    }
+
+    pub fn compatible_managers(&self) -> &'static [Manager] {
+        match self {
+            Self::Linux {
+                distribution: LinuxDistribution::Debian(_),
+                ..
+            } => &[Manager::Apt, Manager::Nix],
+            Self::Linux {
+                distribution: LinuxDistribution::Fedora(_),
+                ..
+            } => &[Manager::Dnf, Manager::Nix],
+            Self::Windows { .. } => &[Manager::Winget, Manager::Chocolatey],
+        }
+    }
+
+    pub fn compatible_managers_display(&self) -> String {
+        format_quoted(self.compatible_managers().iter().map(Manager::as_str))
     }
 
     pub fn validate(
