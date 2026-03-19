@@ -44,7 +44,7 @@ impl OnFailure {
 
 #[derive(Debug)]
 pub struct Script {
-    pub path: Spanned<String>,
+    pub path: Spanned<PathBuf>,
     pub timeout_seconds: Option<Spanned<u32>>,
     pub on_failure: Option<Spanned<OnFailure>>,
 }
@@ -52,7 +52,7 @@ pub struct Script {
 impl<'de> Deserialize<'de> for Script {
     fn deserialize(value: &mut Value<'de>) -> Result<Self, DeserError> {
         let mut table = TableHelper::new(value)?;
-        let path = table.required_s("path")?;
+        let path: Spanned<PathBuf> = table.required_s::<String>("path")?.map();
         let timeout_seconds = table.optional_s("timeout_seconds");
         let on_failure = table
             .optional_s::<String>("on_failure")
@@ -89,7 +89,14 @@ impl Script {
         source_code: &str,
         parent: &Path,
     ) -> Result<(), Validation> {
-        if self.path.value.trim().is_empty() {
+        if self
+            .path
+            .value
+            .as_os_str()
+            .to_string_lossy()
+            .trim()
+            .is_empty()
+        {
             return Err(Validation::EmptyScriptPath {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.path.span),
@@ -97,8 +104,8 @@ impl Script {
             });
         }
 
-        let path = if Path::new(&self.path.value).is_absolute() {
-            PathBuf::from(&self.path.value)
+        let path = if self.path.value.is_absolute() {
+            self.path.value.clone()
         } else {
             parent.join(&self.path.value)
         };
