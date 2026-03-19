@@ -113,6 +113,16 @@ pub enum Validation {
         actual: String,
     },
 
+    #[diagnostic(help("Provide a non-empty path for the machine image."))]
+    #[error("Machine '{machine_identifier}' has an empty image path")]
+    EmptyImagePath {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`image` must not be empty")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
     #[diagnostic(help("Ensure the image file exists at the specified path."))]
     #[error("Machine '{machine_identifier}' image not found: '{path}'")]
     ImageNotFound {

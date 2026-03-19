@@ -191,6 +191,15 @@ impl OperatingSystem {
         let image = match self {
             Self::Linux { image, .. } | Self::Windows { image, .. } => image,
         };
+
+        if image.value.as_os_str().to_string_lossy().trim().is_empty() {
+            return Err(Validation::EmptyImagePath {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(image.span),
+                machine_identifier: machine_identifier.to_owned(),
+            });
+        }
+
         let path = if image.value.is_absolute() {
             image.value.clone()
         } else {
