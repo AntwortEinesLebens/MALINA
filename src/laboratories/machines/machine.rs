@@ -57,7 +57,17 @@ impl Machine {
             .validate(identifier, source_name, source_code, host_resources)?;
         self.operating_system
             .validate(identifier, source_name, source_code, parent)?;
+        self.validate_users(identifier, source_name, source_code)?;
 
+        Ok(())
+    }
+
+    fn validate_users(
+        &self,
+        identifier: &str,
+        source_name: &str,
+        source_code: &str,
+    ) -> Result<(), Validation> {
         if self.users.value.is_empty() {
             return Err(Validation::EmptyUsers {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
