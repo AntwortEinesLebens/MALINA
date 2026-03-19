@@ -35,8 +35,12 @@ pub fn execute(command: Completions) -> Result<()> {
         Completions::Zsh => Shell::Zsh,
     };
     let mut cli = Cli::command();
-    let name = cli.get_name().to_string();
-    clap_complete::generate(shell, &mut cli, name, &mut io::stdout());
+    clap_complete::generate(
+        shell,
+        &mut cli,
+        Cli::command().get_name().to_string(),
+        &mut io::stdout(),
+    );
 
     Ok(())
 }

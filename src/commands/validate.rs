@@ -24,9 +24,7 @@ pub fn execute(path: PathBuf) -> Result<()> {
     }
 
     let source_code = fs::read_to_string(&path).map_err(|error| {
-        let kind = error.kind();
-
-        if kind == IoErrorKind::InvalidData {
+        if error.kind() == IoErrorKind::InvalidData {
             Validation::ConfigurationInvalidUtf8 {
                 path: path.display().to_string(),
             }
@@ -39,10 +37,12 @@ pub fn execute(path: PathBuf) -> Result<()> {
     })?;
 
     let source_name = path.display().to_string();
-    let parent = path.parent().unwrap_or(path.as_path());
-
     let configuration = Configuration::parse(&source_name, &source_code)?;
-    configuration.validate(&source_name, &source_code, parent)?;
+    configuration.validate(
+        &source_name,
+        &source_code,
+        path.parent().unwrap_or(path.as_path()),
+    )?;
 
     Logger::print(&format!(
         "Configuration is valid - Laboratory: {}",

@@ -70,23 +70,21 @@ impl Hardware {
         source_code: &str,
         host_resources: &HostResources,
     ) -> Result<(), Validation> {
-        let cpus = self.cpus.value;
-
-        if cpus < Self::MINIMUM_CPUS {
+        if self.cpus.value < Self::MINIMUM_CPUS {
             return Err(Validation::InsufficientCpu {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.cpus.span),
                 machine_identifier: machine_identifier.to_owned(),
-                actual: cpus,
+                actual: self.cpus.value,
             });
         }
 
-        if cpus as usize > host_resources.cpus {
+        if self.cpus.value as usize > host_resources.cpus {
             return Err(Validation::ExcessiveCpu {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.cpus.span),
                 machine_identifier: machine_identifier.to_owned(),
-                requested: cpus,
+                requested: self.cpus.value,
                 host_cpus: host_resources.cpus,
             });
         }
@@ -101,24 +99,22 @@ impl Hardware {
         source_code: &str,
         host_resources: &HostResources,
     ) -> Result<(), Validation> {
-        let memory_megabyte = self.memory_megabyte.value;
-
-        if memory_megabyte < Self::MINIMUM_MEMORY_MEGABYTE {
+        if self.memory_megabyte.value < Self::MINIMUM_MEMORY_MEGABYTE {
             return Err(Validation::InsufficientMemory {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.memory_megabyte.span),
                 machine_identifier: machine_identifier.to_owned(),
-                actual: memory_megabyte,
+                actual: self.memory_megabyte.value,
                 minimum: Self::MINIMUM_MEMORY_MEGABYTE,
             });
         }
 
-        if u64::from(memory_megabyte) > host_resources.memory_megabyte {
+        if u64::from(self.memory_megabyte.value) > host_resources.memory_megabyte {
             return Err(Validation::ExcessiveMemory {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.memory_megabyte.span),
                 machine_identifier: machine_identifier.to_owned(),
-                requested: memory_megabyte,
+                requested: self.memory_megabyte.value,
                 host_memory_megabyte: host_resources.memory_megabyte,
             });
         }
