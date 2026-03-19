@@ -8,6 +8,7 @@ use crate::{
         hardware::{Hardware, HostResources},
         operating_system::OperatingSystem,
         packages::Packages,
+        script::Script,
         user::User,
     },
 };
@@ -23,6 +24,7 @@ pub struct Machine {
     pub operating_system: OperatingSystem,
     pub users: Spanned<Vec<User>>,
     pub packages: Option<Packages>,
+    pub scripts: Option<Vec<Script>>,
 }
 
 impl<'de> Deserialize<'de> for Machine {
@@ -34,6 +36,7 @@ impl<'de> Deserialize<'de> for Machine {
         let operating_system = table.required("operating_system")?;
         let users = table.required_s::<Vec<User>>("users")?;
         let packages = table.optional("packages");
+        let scripts = table.optional("scripts");
         table.finalize(None)?;
 
         Ok(Self {
@@ -43,6 +46,7 @@ impl<'de> Deserialize<'de> for Machine {
             operating_system,
             users,
             packages,
+            scripts,
         })
     }
 }
@@ -65,6 +69,12 @@ impl Machine {
 
         if let Some(packages) = &self.packages {
             packages.validate(&self.operating_system, identifier, source_name, source_code)?;
+        }
+
+        if let Some(scripts) = &self.scripts {
+            for script in scripts {
+                script.validate(identifier, source_name, source_code, parent)?;
+            }
         }
 
         Ok(())

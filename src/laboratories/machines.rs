@@ -6,4 +6,5 @@ pub mod hardware;
 pub mod machine;
 pub mod operating_system;
 pub mod packages;
+pub mod script;
 pub mod user;

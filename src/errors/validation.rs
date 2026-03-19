@@ -204,6 +204,53 @@ pub enum Validation {
         distribution: String,
         compatible_managers: String,
     },
+
+    #[diagnostic(help("Provide a non-empty path for the script entry."))]
+    #[error("Machine '{machine_identifier}' has a script with an empty path")]
+    EmptyScriptPath {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`path` must not be empty")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
+    #[diagnostic(help("Set `timeout_seconds` to a value between 1 and 3600 (inclusive)."))]
+    #[error(
+        "Machine '{machine_identifier}' has invalid script timeout: {actual} seconds (valid range: 1-3600)"
+    )]
+    InvalidScriptTimeout {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`timeout_seconds` must be between 1 and 3600")]
+        span: SourceSpan,
+        machine_identifier: String,
+        actual: u32,
+    },
+
+    #[diagnostic(help("Ensure the script file exists at the specified path."))]
+    #[error("Machine '{machine_identifier}' script not found: '{path}'")]
+    ScriptNotFound {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`path` file does not exist")]
+        span: SourceSpan,
+        machine_identifier: String,
+        path: String,
+    },
+
+    #[diagnostic(help(
+        "Ensure the script path points to a file, not a directory or other non-file entry."
+    ))]
+    #[error("Machine '{machine_identifier}' script is not a file: '{path}'")]
+    ScriptIsNotAFile {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`path` must point to a file")]
+        span: SourceSpan,
+        machine_identifier: String,
+        path: String,
+    },
 }
 
 impl Validation {
