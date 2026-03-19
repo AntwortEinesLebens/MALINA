@@ -59,7 +59,14 @@ impl Machine {
         parent: &Path,
         host_resources: &HostResources,
     ) -> Result<(), Validation> {
-        let identifier = self.identifier.value.as_str();
+        let identifier = self.identifier.value.trim();
+
+        if identifier.is_empty() {
+            return Err(Validation::EmptyMachineIdentifier {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.identifier.span),
+            });
+        }
 
         self.hardware
             .validate(identifier, source_name, source_code, host_resources)?;

@@ -261,6 +261,39 @@ pub enum Validation {
         machine_identifier: String,
         path: String,
     },
+
+    #[diagnostic(help("Declare at least one `[[machines]]` entry in the configuration."))]
+    #[error("Configuration must declare at least one machine")]
+    EmptyMachines {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("add at least one machine entry")]
+        span: SourceSpan,
+    },
+
+    #[diagnostic(help(
+        "Give each machine a unique `identifier` within the laboratory configuration."
+    ))]
+    #[error(
+        "Machine identifier '{identifier}' is declared more than once (machines at indices: {indices})"
+    )]
+    DuplicateMachineIdentifier {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("duplicate `identifier` in this laboratory")]
+        span: SourceSpan,
+        identifier: String,
+        indices: String,
+    },
+
+    #[diagnostic(help("Provide a non-empty identifier for the machine entry."))]
+    #[error("Machine has an empty identifier")]
+    EmptyMachineIdentifier {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`identifier` must not be empty")]
+        span: SourceSpan,
+    },
 }
 
 impl Validation {

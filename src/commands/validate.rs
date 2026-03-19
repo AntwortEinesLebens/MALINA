@@ -45,8 +45,9 @@ pub fn execute(path: PathBuf) -> Result<()> {
     )?;
 
     Logger::print(&format!(
-        "Configuration is valid - Laboratory: {}",
-        configuration.laboratory.name
+        "Configuration is valid - Laboratory: {} ({} machines)",
+        configuration.laboratory.name,
+        configuration.machines.value.len()
     ));
 
     Ok(())
