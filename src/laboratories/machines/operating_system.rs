@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use crate::{
-    errors::{Validation, format_quoted, validation},
+    errors::{Validation, validation},
     laboratories::machines::packages::Manager,
 };
 use miette::NamedSource;
@@ -178,7 +178,7 @@ impl OperatingSystem {
     }
 
     pub fn compatible_managers_display(&self) -> String {
-        format_quoted(self.compatible_managers().iter().map(Manager::as_str))
+        validation::format_quoted(self.compatible_managers().iter().map(Manager::as_str))
     }
 
     pub fn validate(
