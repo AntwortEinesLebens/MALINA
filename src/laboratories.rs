@@ -5,6 +5,7 @@
 use crate::{
     errors::{Validation, validation},
     laboratories::machines::hardware::HostResources,
+    logger::Logger,
 };
 pub use laboratory::Laboratory;
 pub use machines::machine::Machine;
@@ -66,6 +67,13 @@ impl Configuration {
         let host_resources = HostResources::detect();
 
         for (index, machine) in self.machines.value.iter().enumerate() {
+            Logger::info(&format!(
+                "Machine {} [{}/{}]",
+                machine.identifier.value.trim(),
+                index + 1,
+                self.machines.value.len()
+            ));
+
             machine.validate(source_name, source_code, parent, &host_resources)?;
 
             let identifier = machine.identifier.value.trim();

@@ -42,9 +42,9 @@ impl Logger {
                 match level {
                     Level::Error => writeln!(formatter, "{} {}", "ERROR".red().bold(), message),
                     Level::Warn => writeln!(formatter, "{} {}", "WARN".yellow().bold(), message),
-                    Level::Info => writeln!(formatter, "{} {}", "INFO".green().bold(), message),
+                    Level::Info => writeln!(formatter, "{} {}", "INFO".cyan().bold(), message),
                     Level::Debug => writeln!(formatter, "{} {}", "DEBUG".blue().bold(), message),
-                    Level::Trace => writeln!(formatter, "{} {}", "TRACE".cyan().bold(), message),
+                    Level::Trace => writeln!(formatter, "{} {}", "TRACE".magenta().bold(), message),
                 }
             })
             .init();

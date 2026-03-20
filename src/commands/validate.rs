@@ -7,7 +7,8 @@ use miette::Result;
 use std::{fs, io::ErrorKind as IoErrorKind, path::PathBuf};
 
 pub fn execute(path: PathBuf) -> Result<()> {
-    Logger::info(&format!("Validating: {}", path.display()));
+    Logger::info(&format!("Validating {}", path.display()));
+    Logger::info("Checking file access");
 
     if !path.exists() {
         return Err(Validation::ConfigurationNotFound {
@@ -37,7 +38,14 @@ pub fn execute(path: PathBuf) -> Result<()> {
     })?;
 
     let source_name = path.display().to_string();
+
+    Logger::info("Parsing configuration");
+
     let configuration = Configuration::parse(&source_name, &source_code)?;
+
+    Logger::info("Validating semantics");
+    Logger::info("Checking resources");
+
     configuration.validate(
         &source_name,
         &source_code,
@@ -45,9 +53,8 @@ pub fn execute(path: PathBuf) -> Result<()> {
     )?;
 
     Logger::print(&format!(
-        "Configuration is valid - Laboratory: {} ({} machines)",
-        configuration.laboratory.name,
-        configuration.machines.value.len()
+        "Laboratory {} validated",
+        configuration.laboratory.name
     ));
 
     Ok(())
