@@ -52,7 +52,7 @@ pub fn execute(path: PathBuf) -> Result<()> {
 
     Logger::print(&format!(
         "Laboratory {} validated",
-        configuration.laboratory.name.value
+        configuration.laboratory.name.value,
     ));
 
     Ok(())

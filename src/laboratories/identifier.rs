@@ -4,7 +4,6 @@
 
 use regex::Regex;
 use std::{
-    fmt,
     fmt::{Display, Formatter, Result as FmtResult},
     sync::OnceLock,
 };

@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::errors::{Validation, validation};
+use crate::{
+    errors::{Validation, validation},
+    logger::Logger,
+};
 use miette::NamedSource;
 use sysinfo::System;
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
@@ -49,6 +52,8 @@ impl<'de> Deserialize<'de> for Hardware {
 impl Hardware {
     const MINIMUM_CPUS: u32 = 1;
     const MINIMUM_MEMORY_MEGABYTE: u32 = 512;
+    const RECOMMENDED_MINIMUM_CPUS: u32 = 4;
+    const RECOMMENDED_MINIMUM_MEMORY_MEGABYTE: u32 = 8192;
 
     pub fn validate(
         &self,
@@ -59,8 +64,29 @@ impl Hardware {
     ) -> Result<(), Validation> {
         self.validate_cpu(machine_identifier, source_name, source_code, host_resources)?;
         self.validate_memory(machine_identifier, source_name, source_code, host_resources)?;
+        self.check_warnings(machine_identifier);
 
         Ok(())
+    }
+
+    fn check_warnings(&self, machine_identifier: &str) {
+        if self.memory_megabyte.value < Self::RECOMMENDED_MINIMUM_MEMORY_MEGABYTE {
+            Logger::warn(&format!(
+                "Machine '{}' memory {}MB ({}MB recommended) may trigger VM detection",
+                machine_identifier,
+                self.memory_megabyte.value,
+                Self::RECOMMENDED_MINIMUM_MEMORY_MEGABYTE,
+            ));
+        }
+
+        if self.cpus.value < Self::RECOMMENDED_MINIMUM_CPUS {
+            Logger::warn(&format!(
+                "Machine '{}' has {} CPUs ({} recommended) may trigger VM detection",
+                machine_identifier,
+                self.cpus.value,
+                Self::RECOMMENDED_MINIMUM_CPUS,
+            ));
+        }
     }
 
     fn validate_cpu(

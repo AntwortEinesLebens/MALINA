@@ -63,4 +63,8 @@ impl Logger {
     pub fn debug(message: &str) {
         log::debug!("{}", message);
     }
+
+    pub fn warn(message: &str) {
+        log::warn!("{}", message);
+    }
 }
