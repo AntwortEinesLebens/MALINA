@@ -1,0 +1,67 @@
+## SPDX-FileCopyrightText: 2025 The MALINA development team
+##
+## SPDX-License-Identifier: CC0-1.0
+
+version = 1
+
+[laboratory]
+name = "multi-analysis-laboratory"
+network = "isolated"
+provider = "kvm"
+
+
+[[machines]]
+identifier = "linux-analysis"
+name = "Linux Analysis VM"
+
+[machines.hardware]
+cpus = 2
+memory_megabyte = 4096
+
+[machines.operating_system]
+family = "linux"
+distribution = "debian"
+version = "13"
+# Download a pre-built cloud-init enabled image from the distribution's official repository
+image = "./images/debian-13.qcow2"
+
+[[machines.users]]
+username = "analyst"
+password = "password"
+
+# Multiple users can be added by defining additional [[machines.users]] blocks
+# [[machines.users]]
+# username = "second-analyst"
+# password = "password"
+
+
+[[machines]]
+identifier = "windows-analysis"
+name = "Windows Analysis VM"
+
+[machines.hardware]
+cpus = 4
+memory_megabyte = 4096
+
+[machines.operating_system]
+family = "windows"
+version = "11"
+# Create a cloudbase-init enabled Windows image following the documentation
+image = "./images/windows-11.qcow2"
+
+[[machines.users]]
+username = "analyst"
+password = "password"
+
+[machines.packages]
+manager = "winget"
+install = ["Microsoft.WinDbg"]
+
+[[machines.scripts]]
+path = "./scripts/disable-defender.ps1"
+timeout_seconds = 800
+on_failure = "warn"
+
+# Multiple scripts can be executed by defining additional [[machines.scripts]] blocks
+# [[machines.scripts]]
+# path = "./scripts/install-ghidra.ps1"
