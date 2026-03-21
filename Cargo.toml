@@ -6,7 +6,7 @@
 name = "malina"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.88.0"
 authors = ["The MALINA development team"]
 description = "Create replicable and unique malware analysis laboratories from configuration"
 documentation = "https://AntwortEinesLebens.github.io/MALINA/"
