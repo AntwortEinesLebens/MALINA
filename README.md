@@ -114,7 +114,7 @@ add it to your shell's configuration file:
 | Shell    | Command                                    |
 | -------- | ------------------------------------------ |
 | Bash     | `malina completions bash >> ~/.bashrc`     |
-| Elvish   | `malina completions elvish >> ~/.elvish/rc.elv` |
+| Elvish   | `malina completions elvish >> ~/.config/elvish/rc.elv` |
 | Fish     | `malina completions fish > ~/.config/fish/completions/malina.fish` |
 | PowerShell | `malina completions powershell >> $PROFILE` |
 | Zsh      | `malina completions zsh >> ~/.zshrc`       |
