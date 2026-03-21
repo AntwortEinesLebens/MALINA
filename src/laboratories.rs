@@ -13,12 +13,15 @@ use miette::NamedSource;
 use std::{collections::HashMap, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
+mod identifier;
 mod laboratory;
 pub mod machines;
 
+const CURRENT_VERSION: u64 = 1;
+
 #[derive(Debug)]
 pub struct Configuration {
-    pub version: String,
+    pub version: Spanned<u64>,
     pub laboratory: Laboratory,
     pub machines: Spanned<Vec<Machine>>,
 }
@@ -26,7 +29,7 @@ pub struct Configuration {
 impl<'de> Deserialize<'de> for Configuration {
     fn deserialize(value: &mut toml_span::Value<'de>) -> Result<Self, DeserError> {
         let mut table = TableHelper::new(value)?;
-        let version = table.required("version")?;
+        let version = table.required_s("version")?;
         let laboratory = table.required("laboratory")?;
         let machines = table.required_s::<Vec<Machine>>("machines")?;
         table.finalize(None)?;
@@ -55,9 +58,18 @@ impl Configuration {
         source_code: &str,
         parent: &Path,
     ) -> Result<(), Validation> {
-        Logger::info("Checking laboratory");
+        Logger::info("Checking version");
 
-        self.laboratory.validate(source_name, source_code)?;
+        if self.version.value != CURRENT_VERSION {
+            return Err(Validation::FormatVersionMismatch {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.version.span),
+                actual: self.version.value,
+                expected: CURRENT_VERSION,
+            });
+        }
+
+        Logger::info("Checking laboratory");
 
         Logger::info("Checking machines");
 
@@ -75,14 +87,14 @@ impl Configuration {
         for (index, machine) in self.machines.value.iter().enumerate() {
             Logger::info(&format!(
                 "Machine {} [{}/{}]",
-                machine.identifier.value.trim(),
+                machine.identifier.value.as_str(),
                 index + 1,
                 self.machines.value.len()
             ));
 
             machine.validate(source_name, source_code, parent, &host_resources)?;
 
-            let identifier = machine.identifier.value.trim();
+            let identifier = machine.identifier.value.as_str();
 
             if let Some(&first_index) = identifier_first_indices.get(identifier) {
                 return Err(Validation::DuplicateMachineIdentifier {

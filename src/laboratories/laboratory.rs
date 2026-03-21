@@ -2,7 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use toml_span::{DeserError, Deserialize, Error, ErrorKind, Value, de_helpers::TableHelper};
+use crate::laboratories::identifier::Identifier;
+use toml_span::{
+    DeserError, Deserialize, Error, ErrorKind, Spanned, Value, de_helpers::TableHelper,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Network {
@@ -12,13 +15,6 @@ pub enum Network {
 
 impl Network {
     const EXPECTED_VALUES: &'static [&'static str] = &["isolated", "preserved"];
-
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Isolated => "isolated",
-            Self::Preserved => "preserved",
-        }
-    }
 }
 
 impl<'de> Deserialize<'de> for Network {
@@ -47,12 +43,6 @@ pub enum Provider {
 
 impl Provider {
     const EXPECTED_VALUES: &'static [&'static str] = &["kvm"];
-
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Kvm => "kvm",
-        }
-    }
 }
 
 impl<'de> Deserialize<'de> for Provider {
@@ -75,7 +65,7 @@ impl<'de> Deserialize<'de> for Provider {
 
 #[derive(Debug)]
 pub struct Laboratory {
-    pub name: String,
+    pub name: Spanned<Identifier>,
     pub network: Network,
     pub provider: Provider,
 }
@@ -83,7 +73,7 @@ pub struct Laboratory {
 impl<'de> Deserialize<'de> for Laboratory {
     fn deserialize(value: &mut toml_span::Value<'de>) -> Result<Self, DeserError> {
         let mut table = TableHelper::new(value)?;
-        let name = table.required("name")?;
+        let name = table.required_s("name")?;
         let network = table.required("network")?;
         let provider = table.required("provider")?;
         table.finalize(None)?;

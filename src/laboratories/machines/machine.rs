@@ -4,12 +4,15 @@
 
 use crate::{
     errors::{Validation, validation},
-    laboratories::machines::{
-        hardware::{Hardware, HostResources},
-        operating_system::OperatingSystem,
-        packages::Packages,
-        script::Script,
-        user::User,
+    laboratories::{
+        identifier::Identifier,
+        machines::{
+            hardware::{Hardware, HostResources},
+            operating_system::OperatingSystem,
+            packages::Packages,
+            script::Script,
+            user::User,
+        },
     },
     logger::Logger,
 };
@@ -19,7 +22,7 @@ use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
 #[derive(Debug)]
 pub struct Machine {
-    pub identifier: Spanned<String>,
+    pub identifier: Spanned<Identifier>,
     pub name: String,
     pub hardware: Hardware,
     pub operating_system: OperatingSystem,
@@ -60,14 +63,7 @@ impl Machine {
         parent: &Path,
         host_resources: &HostResources,
     ) -> Result<(), Validation> {
-        let identifier = self.identifier.value.trim();
-
-        if identifier.is_empty() {
-            return Err(Validation::EmptyMachineIdentifier {
-                source_code: NamedSource::new(source_name, source_code.to_owned()),
-                span: validation::to_source_span(self.identifier.span),
-            });
-        }
+        let identifier = self.identifier.value.as_str();
 
         Logger::info("Checking hardware");
 

@@ -286,13 +286,19 @@ pub enum Validation {
         indices: String,
     },
 
-    #[diagnostic(help("Provide a non-empty identifier for the machine entry."))]
-    #[error("Machine has an empty identifier")]
-    EmptyMachineIdentifier {
+    #[diagnostic(help(
+        "Update the version field to match the current configuration version ({expected})."
+    ))]
+    #[error(
+        "Configuration version mismatch: configuration uses {actual}, but MALINA expects version {expected}"
+    )]
+    FormatVersionMismatch {
         #[source_code]
         source_code: NamedSource<String>,
-        #[label("`identifier` must not be empty")]
+        #[label("version must be {expected}")]
         span: SourceSpan,
+        actual: u64,
+        expected: u64,
     },
 }
 
@@ -310,7 +316,7 @@ impl Validation {
 
         Self::InvalidConfiguration {
             message: Self::format_toml_error(&primary),
-            source_code: NamedSource::new(source_name.to_owned(), source_code.to_owned()),
+            source_code: NamedSource::new(source_name, source_code.to_owned()),
             span: Self::highlighted_span(&primary),
         }
     }
@@ -318,7 +324,7 @@ impl Validation {
     pub fn from_toml_error(error: TomlError, source_name: &str, source_code: &str) -> Self {
         Self::InvalidConfiguration {
             message: Self::format_toml_error(&error),
-            source_code: NamedSource::new(source_name.to_owned(), source_code.to_owned()),
+            source_code: NamedSource::new(source_name, source_code.to_owned()),
             span: Self::highlighted_span(&error),
         }
     }

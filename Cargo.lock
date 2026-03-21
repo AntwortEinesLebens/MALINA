@@ -317,6 +317,7 @@ dependencies = [
  "log",
  "miette",
  "owo-colors",
+ "regex",
  "sysinfo",
  "thiserror",
  "toml-span",
