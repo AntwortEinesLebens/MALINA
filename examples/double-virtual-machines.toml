@@ -5,7 +5,7 @@
 version = 1
 
 [laboratory]
-name = "multi-analysis-laboratory"
+name = "double-virtual-machines"
 network = "isolated"
 provider = "kvm"
 
