@@ -69,11 +69,11 @@ as the project evolves.
 **Modular Automated Laboratories for Investigating Nefarious Artifacts** ([MALINA])
 is a tool designed to help security researchers and malware analysts create
 reproducible, stealthy, and unique analysis environments. By leveraging a
-simple configuration file, MALINA automates the deployment of virtual machines
+simple configuration file, [MALINA] automates the deployment of virtual machines
 pre-configured with analysis tools, anti-detection patches, and realistic
 system activity.
 
-Each laboratory built with MALINA is both reproducible and unique. Reproducible means
+Each laboratory built with [MALINA] is both reproducible and unique. Reproducible means
 that the same configuration yields the same toolset and patches. Unique means
 that each deployment generates a distinct system footprint to prevent
 fingerprinting. Think of it as infrastructure as code tailored specifically for
@@ -84,7 +84,7 @@ malware analysis workflows.
 Setting up a malware analysis lab is a time-consuming, error-prone process.
 Making it resistant to detection adds another layer of complexity. While
 automation scripts can help, they're often custom-made, difficult to share,
-and hard to maintain. MALINA aims to make malware analysis labs more
+and hard to maintain. [MALINA] aims to make malware analysis labs more
 accessible, reproducible, and disposable—so you can focus on analyzing
 malware, not building environments.
 
