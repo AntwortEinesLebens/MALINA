@@ -14,7 +14,6 @@ use crate::{
     logger::Logger,
 };
 use miette::NamedSource;
-use owo_colors::OwoColorize;
 use std::{collections::HashSet, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
@@ -75,43 +74,30 @@ impl Machine {
         self.hardware
             .validate(identifier, source_name, source_code, host_resources)?;
 
-        Logger::info(&format!("Hardware {}", "OK".green()));
         Logger::info("Checking operating system");
 
         self.operating_system
             .validate(identifier, source_name, source_code, parent)?;
 
-        Logger::info(&format!("Operating system {}", "OK".green()));
-        Logger::info("Checking users");
+        Logger::info(&format!("Checking users ({})", self.users.value.len()));
 
         self.validate_users(identifier, source_name, source_code)?;
 
-        Logger::info(&format!(
-            "Users ({}) {}",
-            self.users.value.len(),
-            "OK".green()
-        ));
-
         if let Some(packages) = &self.packages {
-            Logger::info("Checking packages");
+            Logger::info(&format!(
+                "Checking packages ({})",
+                packages.install.value.len()
+            ));
 
             packages.validate(&self.operating_system, identifier, source_name, source_code)?;
-
-            Logger::info(&format!(
-                "Packages ({}) {}",
-                packages.install.value.len(),
-                "OK".green()
-            ));
         }
 
         if let Some(scripts) = &self.scripts {
-            Logger::info("Checking scripts");
+            Logger::info(&format!("Checking scripts ({})", scripts.len()));
 
             for script in scripts {
                 script.validate(identifier, source_name, source_code, parent)?;
             }
-
-            Logger::info(&format!("Scripts ({}) {}", scripts.len(), "OK".green()));
         }
 
         Ok(())

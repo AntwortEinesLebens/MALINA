@@ -55,6 +55,12 @@ impl Configuration {
         source_code: &str,
         parent: &Path,
     ) -> Result<(), Validation> {
+        Logger::info("Checking laboratory");
+
+        self.laboratory.validate(source_name, source_code)?;
+
+        Logger::info("Checking machines");
+
         if self.machines.value.is_empty() {
             return Err(Validation::EmptyMachines {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
@@ -86,6 +92,7 @@ impl Configuration {
                     indices: format!("{}, {}", first_index, index),
                 });
             }
+
             identifier_first_indices.insert(identifier, index);
         }
 
