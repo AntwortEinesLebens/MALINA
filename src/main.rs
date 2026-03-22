@@ -18,6 +18,7 @@ mod commands;
 mod errors;
 mod laboratories;
 mod logger;
+mod state;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
