@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::errors::state::State;
+use crate::errors::State;
 use std::{
     fmt::{Display, Formatter, Result as FmtResult},
     str::FromStr,
