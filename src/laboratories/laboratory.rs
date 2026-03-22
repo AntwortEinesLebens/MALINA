@@ -63,7 +63,7 @@ impl<'de> Deserialize<'de> for Provider {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Laboratory {
     pub name: Spanned<Identifier>,
     pub network: Network,

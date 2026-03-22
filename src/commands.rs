@@ -2,9 +2,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+pub use crate::commands::{completions::Completions, laboratories::Laboratories};
 use clap::Subcommand;
-pub use completions::Completions;
-pub use laboratories::Laboratories;
 use std::path::PathBuf;
 
 pub mod completions;

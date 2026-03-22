@@ -2,13 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+pub use crate::laboratories::{
+    identifier::Identifier,
+    laboratory::{Laboratory, Provider},
+    machines::machine::Machine,
+};
 use crate::{
     errors::{Validation, validation},
     laboratories::machines::hardware::HostResources,
     logger::Logger,
 };
-pub use laboratory::Laboratory;
-pub use machines::machine::Machine;
 use miette::NamedSource;
 use std::{collections::HashMap, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};

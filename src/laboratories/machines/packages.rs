@@ -60,7 +60,7 @@ impl Manager {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Packages {
     pub manager: Spanned<Manager>,
     pub install: Spanned<Vec<Spanned<String>>>,

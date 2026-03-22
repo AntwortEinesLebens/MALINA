@@ -6,7 +6,7 @@ use crate::errors::{Validation, validation};
 use miette::NamedSource;
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct User {
     pub username: Spanned<String>,
     pub password: Spanned<String>,

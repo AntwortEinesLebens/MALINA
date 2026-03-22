@@ -20,7 +20,7 @@ use miette::NamedSource;
 use std::{collections::HashSet, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Machine {
     pub identifier: Spanned<Identifier>,
     pub name: String,

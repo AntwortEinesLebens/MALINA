@@ -42,7 +42,7 @@ impl OnFailure {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Script {
     pub path: Spanned<PathBuf>,
     pub timeout_seconds: Option<Spanned<u32>>,

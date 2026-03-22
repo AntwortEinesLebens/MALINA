@@ -29,7 +29,7 @@ impl HostResources {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Hardware {
     pub cpus: Spanned<u32>,
     pub memory_megabyte: Spanned<u32>,
