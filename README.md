@@ -64,6 +64,11 @@ unstable, or subject to change without notice. It is not recommended for
 production use at this time. Use at your own risk and expect breaking changes
 as the project evolves.
 
+At this stage, deployed environments are also likely to be flagged as virtual
+machines because stealth hardening is not implemented yet. The current focus is
+development, functionality, and architecture iteration rather than anti-
+detection guarantees.
+
 ## 👀 About the project
 
 **Modular Automated Laboratories for Investigating Nefarious Artifacts** ([MALINA])
