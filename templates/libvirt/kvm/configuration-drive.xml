@@ -1,0 +1,9 @@
+<!-- SPDX-FileCopyrightText: 2025 The MALINA development team -->
+<!-- -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<disk type='file' device='cdrom'>
+  <driver name='qemu' type='raw'/>
+  <source file='{{ path }}'/>
+  <target dev='sdb' bus='sata'/>
+  <readonly/>
+</disk>

@@ -1,0 +1,43 @@
+<!-- SPDX-FileCopyrightText: 2025 The MALINA development team -->
+<!-- -->
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<domain type='{{ domain_type }}'>
+  <name>{{ identifier }}</name>
+  <title>{{ name }}</title>
+  <memory unit='MiB'>{{ memory }}</memory>
+  <vcpu placement='static'>{{ cpus }}</vcpu>
+  <os>
+    <type arch='x86_64' machine='q35'>hvm</type>
+    <boot dev='hd'/>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+  </features>
+  <cpu mode='host-passthrough'/>
+  <devices>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='{{ image }}'/>
+      <target dev='vda' bus='virtio'/>
+    </disk>
+    <interface type='network'>
+      <source network='{{ network_name }}'/>
+      <model type='virtio'/>
+    </interface>
+    <input type='tablet' bus='usb'/>
+    <input type='keyboard' bus='usb'/>
+    <graphics type='spice' autoport='yes' listen='127.0.0.1'/>
+    <video>
+      <model type='{% if is_windows %}vga{% else %}virtio{% endif %}'/>
+    </video>
+    {% if is_windows %}
+    <tpm model='tpm-crb'>
+      <backend type='emulator' version='2.0'/>
+    </tpm>
+    {% endif %}
+    <serial type='pty'>
+      <target port='0'/>
+    </serial>
+  </devices>
+</domain>
