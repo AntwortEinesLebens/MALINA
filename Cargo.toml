@@ -40,3 +40,4 @@ owo-colors = { version = "=4.3.0", features = ["supports-colors"] }
 toml-span = { version = "=0.7.1" }
 regex = { version = "=1.12.3" }
 sysinfo = { version = "=0.38.4" }
+virt = { version = "=0.4.3" }
