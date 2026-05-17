@@ -2,16 +2,16 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pub use crate::commands::{completions::Completions, laboratories::Laboratories};
-use clap::Subcommand;
-use std::path::PathBuf;
-
 pub mod completions;
 pub mod deploy;
 pub mod diagnose;
 pub mod doctor;
 pub mod laboratories;
 pub mod validate;
+
+pub use crate::commands::{completions::Completions, laboratories::Laboratories};
+use clap::Subcommand;
+use std::path::PathBuf;
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {

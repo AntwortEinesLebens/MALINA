@@ -2,6 +2,10 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+mod identifier;
+mod laboratory;
+pub mod machines;
+
 pub use crate::laboratories::{
     identifier::Identifier,
     laboratory::{Laboratory, Provider},
@@ -15,10 +19,6 @@ use crate::{
 use miette::NamedSource;
 use std::{collections::HashMap, path::Path};
 use toml_span::{DeserError, Deserialize, Spanned, de_helpers::TableHelper};
-
-mod identifier;
-mod laboratory;
-pub mod machines;
 
 const CURRENT_VERSION: u64 = 1;
 

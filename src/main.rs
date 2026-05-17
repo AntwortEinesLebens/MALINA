@@ -2,6 +2,15 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+mod cli;
+mod commands;
+mod errors;
+mod laboratories;
+mod logger;
+mod providers;
+mod state;
+mod template;
+
 use crate::{
     cli::Cli,
     commands::{
@@ -12,14 +21,6 @@ use crate::{
 };
 use clap::Parser;
 use miette::{MietteHandlerOpts, Result};
-
-mod cli;
-mod commands;
-mod errors;
-mod laboratories;
-mod logger;
-mod state;
-mod template;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();

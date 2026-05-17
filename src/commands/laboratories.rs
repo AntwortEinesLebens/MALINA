@@ -2,13 +2,13 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use clap::Subcommand;
-use miette::Result;
-
 pub mod destroy;
 pub mod list;
 pub mod start;
 pub mod stop;
+
+use clap::Subcommand;
+use miette::Result;
 
 #[derive(Subcommand, Debug)]
 pub enum Laboratories {
