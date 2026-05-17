@@ -1,0 +1,90 @@
+site_name: MALINA - Modular Automated Laboratories for Investigating Nefarious Artifacts
+site_description: Deploy and manage stealthy, reproducible malware analysis laboratories from configuration files
+site_author: The MALINA development team
+copyright: 'Copyright &copy; 2025 The MALINA development team'
+
+repo_url: https://github.com/AntwortEinesLebens/MALINA
+remote_name: main
+
+# Social links
+social:
+  - icon: fontawesome/brands/github
+    link: https://github.com/AntwortEinesLebens/MALINA
+
+# Repository configuration
+repo_name: MALINA
+repo_url: https://github.com/AntwortEinesLebens/MALINA
+
+# Navigation structure
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Usage Guide: usage.md
+  - Troubleshooting: troubleshooting.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+# Theme configuration
+theme:
+  name: material
+  language: en
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.tooltips
+  icon:
+    logo: fontawesome/solid/flask
+
+# Custom colors
+extra_css:
+  - stylesheets/extra.css
+
+# Plugins
+plugins:
+  - search:
+      separator: '[\s\x00-\x1F]'
+      lang: en
+  - social:
+      cards: true
+  - glightbox
+
+# Markdown extensions
+markdown_extensions:
+  - admonition
+  - attr_list
+  - codehilite:
+      guess_lang: true
+      linenums: false
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+# Extra features
+extra:
+  version:
+    provider: mike
+    default: latest
+
+# Customization
+extra:
+  generator: false

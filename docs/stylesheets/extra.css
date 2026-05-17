@@ -1,0 +1,113 @@
+/* MALINA Documentation Custom Styles */
+
+/* Primary color scheme */
+.md-primary {
+    --md-hue: 210;
+}
+
+/* Code block styling */
+pre, code {
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* Table improvements */
+.md-typeset__table {
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.md-typeset table:not([class]) {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.md-typeset table:not([class]) th,
+.md-typeset table:not([class]) td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--md-typeset-table-color);
+}
+
+/* Admonition blocks */
+.admonition {
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Code block line highlighting */
+.md-typeset .highlight {
+    background-color: var(--md-code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+/* Navigation tabs styling */
+.md-nav__link--active {
+    font-weight: 600;
+    color: var(--md-primary-fg-color);
+}
+
+/* Search improvements */
+.md-search__overlay {
+    background-color: rgba(0, 0, 0, 0.95);
+}
+
+/* Footer customization */
+.md-footer-meta {
+    background-color: var(--md-default-fg-color--lightest);
+    border-top: 1px solid var(--md-typeset-table-color);
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Anchor links */
+.md-content__anchor {
+    scroll-margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .md-typeset__table {
+        font-size: 0.9rem;
+    }
+    
+    .admonition {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Terminal/command block styling */
+.md-typeset .language-sh,
+.md-typeset .language-bash {
+    background-color: #1e1e1e !important;
+    color: #d4d4d4 !important;
+}
+
+/* Warning boxes */
+.admonition-warning {
+    border-left-color: #f57c00;
+    background-color: rgba(245, 124, 0, 0.08);
+}
+
+/* Info boxes */
+.admonition-info {
+    border-left-color: #2196f3;
+    background-color: rgba(33, 150, 243, 0.08);
+}
+
+/* Success boxes */
+.admonition-success {
+    border-left-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.08);
+}
+
+/* Error boxes */
+.admonition-error {
+    border-left-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.08);
+}
