@@ -3,9 +3,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use miette::{Diagnostic, NamedSource, SourceSpan};
-use std::io::Error as IoError;
+use std::io;
 use thiserror::Error;
-use toml_span::{DeserError, Error as TomlError, ErrorKind as TomlErrorKind, Span};
+use toml_span::{DeserError, Span};
 
 #[derive(Error, Diagnostic, Debug)]
 pub enum Validation {
@@ -28,7 +28,7 @@ pub enum Validation {
     ConfigurationReadError {
         path: String,
         #[source]
-        source: IoError,
+        source: io::Error,
     },
 
     #[diagnostic(help("The specified path must be a file, not a directory."))]
@@ -321,7 +321,7 @@ impl Validation {
         }
     }
 
-    pub fn from_toml_error(error: TomlError, source_name: &str, source_code: &str) -> Self {
+    pub fn from_toml_error(error: toml_span::Error, source_name: &str, source_code: &str) -> Self {
         Self::InvalidConfiguration {
             message: Self::format_toml_error(&error),
             source_code: NamedSource::new(source_name, source_code.to_owned()),
@@ -329,18 +329,20 @@ impl Validation {
         }
     }
 
-    fn highlighted_span(error: &TomlError) -> Option<SourceSpan> {
+    fn highlighted_span(error: &toml_span::Error) -> Option<SourceSpan> {
         let span = match &error.kind {
-            TomlErrorKind::UnexpectedKeys { keys, .. } => keys.first().map(|(_, span)| *span),
+            toml_span::ErrorKind::UnexpectedKeys { keys, .. } => {
+                keys.first().map(|(_, span)| *span)
+            }
             _ => Some(error.span),
         }?;
 
         (!span.is_empty()).then(|| to_source_span(span))
     }
 
-    fn format_toml_error(error: &TomlError) -> String {
+    fn format_toml_error(error: &toml_span::Error) -> String {
         match &error.kind {
-            TomlErrorKind::UnexpectedKeys { keys, expected } => {
+            toml_span::ErrorKind::UnexpectedKeys { keys, expected } => {
                 let actual = format_quoted(keys.iter().map(|(name, _)| name.as_str()));
                 let expected = format_quoted(expected.iter().map(String::as_str));
 
@@ -350,8 +352,8 @@ impl Validation {
                     format!("unknown fields {actual}, expected one of {expected}")
                 }
             }
-            TomlErrorKind::MissingField(field) => format!("missing field `{field}`"),
-            TomlErrorKind::UnexpectedValue { expected, value } => {
+            toml_span::ErrorKind::MissingField(field) => format!("missing field `{field}`"),
+            toml_span::ErrorKind::UnexpectedValue { expected, value } => {
                 let expected = format_quoted(expected.iter().copied());
 
                 match value {
@@ -359,7 +361,7 @@ impl Validation {
                     None => format!("expected {expected}"),
                 }
             }
-            TomlErrorKind::Wanted { expected, found } => {
+            toml_span::ErrorKind::Wanted { expected, found } => {
                 format!("found {found}, expected {expected}")
             }
             _ => error.to_string(),

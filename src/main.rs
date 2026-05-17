@@ -13,10 +13,7 @@ mod template;
 
 use crate::{
     cli::Cli,
-    commands::{
-        Commands, completions, deploy, diagnose, doctor, laboratories as laboratories_command,
-        validate,
-    },
+    commands::{Commands, completions, deploy, diagnose, doctor, validate},
     logger::Logger,
 };
 use clap::Parser;
@@ -44,7 +41,7 @@ fn main() -> Result<()> {
         Commands::Deploy { path } => deploy::execute(path)?,
         Commands::Doctor => doctor::execute()?,
         Commands::Diagnose { name } => diagnose::execute(name)?,
-        Commands::Laboratories(subcommand) => laboratories_command::execute(subcommand)?,
+        Commands::Laboratories(subcommand) => commands::laboratories::execute(subcommand)?,
     }
 
     Ok(())

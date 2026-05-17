@@ -4,7 +4,7 @@
 
 use crate::{errors::Validation, laboratories::Configuration, logger::Logger};
 use miette::Result;
-use std::{fs, io::ErrorKind as IoErrorKind, path::PathBuf};
+use std::{fs, io, path::PathBuf};
 
 pub fn execute(path: PathBuf) -> Result<()> {
     Logger::info("Checking file access");
@@ -24,7 +24,7 @@ pub fn execute(path: PathBuf) -> Result<()> {
     }
 
     let source_code = fs::read_to_string(&path).map_err(|error| {
-        if error.kind() == IoErrorKind::InvalidData {
+        if error.kind() == io::ErrorKind::InvalidData {
             Validation::ConfigurationInvalidUtf8 {
                 path: path.display().to_string(),
             }

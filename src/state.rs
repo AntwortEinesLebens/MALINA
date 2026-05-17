@@ -4,7 +4,7 @@
 
 use crate::errors::State;
 use std::{
-    fmt::{Display, Formatter, Result as FmtResult},
+    fmt::{self, Display, Formatter},
     str::FromStr,
 };
 
@@ -51,7 +51,7 @@ impl Machine {
 }
 
 impl Display for Machine {
-    fn fmt(&self, formatter: &mut Formatter<'_>) -> FmtResult {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
         match self {
             Machine::Planned => write!(formatter, "planned"),
             Machine::Provisioning => write!(formatter, "provisioning"),

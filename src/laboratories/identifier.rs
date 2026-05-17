@@ -4,7 +4,7 @@
 
 use regex::Regex;
 use std::{
-    fmt::{Display, Formatter, Result as FmtResult},
+    fmt::{self, Display, Formatter},
     sync::OnceLock,
 };
 use toml_span::{DeserError, Deserialize, Error, ErrorKind, Value};
@@ -28,7 +28,7 @@ impl Identifier {
 }
 
 impl Display for Identifier {
-    fn fmt(&self, formatter: &mut Formatter<'_>) -> FmtResult {
+    fn fmt(&self, formatter: &mut Formatter<'_>) -> fmt::Result {
         write!(formatter, "{}", self.0)
     }
 }
