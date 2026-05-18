@@ -72,7 +72,7 @@ image = "./images/debian-13.qcow2"  # Path to disk image
 image = "./images/windows-11.qcow2"
 ```
 
-**Note**: For Windows images, ensure they are pre-configured with `cloudbase-init` for proper MALINA integration.
+**Note**: For Windows images, ensure they are pre-configured with [`cloudbase-init`](cloudbaseinit.md) for proper MALINA integration.
 
 ### Users
 

@@ -2,7 +2,7 @@
 
 This guide covers different ways to install MALINA on your system.
 
-## Prerequisites
+## Prerequisites 
 
 Before installing MALINA, ensure you have the following:
 
@@ -54,6 +54,10 @@ After installation, enable shell completion for your preferred shell:
 | PowerShell | `malina completions powershell >> $PROFILE` |
 | Zsh      | `malina completions zsh >> ~/.zshrc`       |
 
+### Powershell completion
+
+For powershell completion, you need to install libvirt and libvirt-devel [crates.io](https://crates.io/crates/virt)
+
 ## Verification
 
 Verify the installation by checking the version:
@@ -100,12 +104,15 @@ cargo uninstall malina
 ```
 
 ### Manual Removal
-
+Linux
 ```sh
 sudo rm /usr/local/bin/malina
 # Remove configuration files if needed
 rm -rf ~/.config/malina
 ```
+
+Windows  
+Remove the project files
 
 ## Updating
 
