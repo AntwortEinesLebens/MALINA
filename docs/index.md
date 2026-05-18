@@ -85,72 +85,6 @@ Think of it as infrastructure as code tailored specifically for malware analysis
 - 📊 **Reproducible Environments** - Version-controlled lab configurations
 - 🔍 **Diagnostics & Validation** - Built-in tools to verify setups
 
-## 📚 Documentation
-
-| Page | Description |
-|------|-------------|
-| [Installation](installation.md) | Install MALINA on your system |
-| [Configuration](configuration.md) | Learn about configuration options |
-| [Usage Guide](usage.md) | Complete usage examples and workflows |
-| [Troubleshooting](troubleshooting.md) | Solve common issues |
-| [Contributing](contributing.md) | Help improve MALINA |
-
-## 🛠️ Example Configuration
-
-```toml
-version = 1
-
-[laboratory]
-name = "malware-analysis-lab"
-network = "isolated"
-provider = "kvm"
-
-
-[[machines]]
-identifier = "linux-host"
-name = "Linux Analysis Host"
-
-[machines.hardware]
-cpus = 4
-memory_megabyte = 8192
-
-[machines.operating_system]
-family = "linux"
-distribution = "ubuntu"
-version = "24.04"
-image = "./images/ubuntu-24.04.qcow2"
-
-[[machines.users]]
-username = "analyst"
-password = "secure_password_123"
-
-
-[[machines]]
-identifier = "windows-host"
-name = "Windows Analysis Host"
-
-[machines.hardware]
-cpus = 4
-memory_megabyte = 8192
-
-[machines.operating_system]
-family = "windows"
-version = "11"
-image = "./images/windows-11.qcow2"
-
-[[machines.users]]
-username = "analyst"
-password = "secure_password_123"
-
-[machines.packages]
-manager = "winget"
-install = ["Microsoft.WinDbg"]
-```
-
-## 🤝 Contributing
-
-The open source community is an awesome place to learn, inspire, and create. We're grateful for any contributions you can make! See the [Contributing Guide](contributing.md) for details on how to get involved.
-
 ## 📜 License
 
 Distributed under the [GPL 3.0 or later] license.
@@ -169,5 +103,5 @@ Distributed under the [GPL 3.0 or later] license.
 
 [cargo]: https://doc.rust-lang.org/stable/cargo/
 [crates.io]: https://crates.io/
-[gpl 3.0 or later]: ./LICENSES/GPL-3.0-or-later.txt
+[gpl 3.0 or later]: https://github.com/AntwortEinesLebens/MALINA/LICENSES/GPL-3.0-or-later.txt
 [malina]: https://github.com/AntwortEinesLebens/MALINA/
