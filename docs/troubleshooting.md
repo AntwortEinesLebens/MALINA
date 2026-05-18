@@ -287,19 +287,6 @@ systemctl status libvirtd  # Libvirt service status
 qemu-system-x86_64 --version  # QEMU version
 ```
 
-### View MALINA logs
-
-```sh
-# Find log directory
-ls -la ~/.config/malina/logs/
-
-# View latest log
-tail -f ~/.config/malina/logs/latest.log
-
-# Search for errors
-grep -i error ~/.config/malina/logs/*.log
-```
-
 ## Common Error Messages
 
 ### "Failed to connect to libvirt"
@@ -326,14 +313,6 @@ grep -i error ~/.config/malina/logs/*.log
 
 **Fix**: Find and close the process, or use a different image path
 
-## Getting More Help
-
-If you've tried these solutions and still have issues:
-
-1. **Run diagnostics**: `malina doctor` and `malina diagnose lab-name`
-2. **Check logs**: Review files in `~/.config/malina/logs/`
-3. **Search existing issues**: [GitHub Issues](https://github.com/AntwortEinesLebens/MALINA/issues)
-4. **Create a new issue**: Include output of diagnostic commands and error messages
 
 ## Reporting Bugs
 

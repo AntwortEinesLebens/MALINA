@@ -159,22 +159,6 @@ This helps identify problems such as:
 - Resource conflicts
 - Permission issues
 
-## Shell Completion
-
-Generate completion scripts for your shell to improve command-line experience:
-
-```sh
-# For Bash
-malina completions bash >> ~/.bashrc
-source ~/.bashrc
-
-# For Zsh
-malina completions zsh >> ~/.zshrc
-
-# For Fish
-malina completions fish > ~/.config/fish/completions/malina.fish
-```
-
 ## Workflow Examples
 
 ### Quick Start
@@ -208,14 +192,6 @@ Create separate configuration files for different scenarios:
 - `advanced-analysis.toml`: Multi-VM environment with Windows host
 - `forensics-lab.toml`: Specialized forensics tools setup
 
-## Tips and Tricks
-
-1. **Use descriptive names**: Choose meaningful laboratory names for easy identification
-2. **Version your configs**: Include version information in config comments
-3. **Test configurations**: Always validate before deploying to production environments
-4. **Backup images**: Keep disk image backups outside the MALINA configuration directory
-5. **Document scripts**: Comment PowerShell and shell scripts used in configurations
-
 ## Error Handling
 
 MALINA provides detailed error messages when issues occur:
@@ -233,9 +209,3 @@ Common errors and solutions:
 | "Invalid TOML syntax" | Validate with `malina validate` first |
 | "KVM not available" | Run `malina doctor` to check system requirements |
 | "Permission denied" | Add user to libvirt group or use sudo |
-
-## Next Steps
-
-- [Configuration](configuration.md): Learn about configuration options
-- [Installation](installation.md): Troubleshoot installation issues
-- [Contributing](contributing.md): Help improve MALINA
