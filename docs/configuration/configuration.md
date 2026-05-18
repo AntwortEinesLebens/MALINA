@@ -1,4 +1,4 @@
-# Configuration
+# Laboratory file
 
 MALINA uses TOML configuration files to define laboratory setups. This guide explains the available options and how to create your own configurations.
 
@@ -182,14 +182,6 @@ malina validate lab-config.toml
 ```
 
 This checks for syntax errors and ensures all required fields are present.
-
-## Best Practices
-
-1. **Use strong passwords**: Never use default or weak passwords in production configurations
-2. **Version control**: Store configuration files in version control (excluding disk images)
-3. **Modular designs**: Split large configurations into multiple files when needed
-4. **Testing**: Always validate configurations before deployment
-5. **Documentation**: Comment complex configurations for future reference
 
 ## Template Examples
 

@@ -2,15 +2,6 @@ site_name: MALINA - Modular Automated Laboratories for Investigating Nefarious A
 site_description: Deploy and manage stealthy, reproducible malware analysis laboratories from configuration files
 site_author: The MALINA development team
 copyright: 'Copyright &copy; 2025 The MALINA development team'
-
-repo_url: https://github.com/AntwortEinesLebens/MALINA
-remote_name: main
-
-# Social links
-social:
-  - icon: fontawesome/brands/github
-    link: https://github.com/AntwortEinesLebens/MALINA
-
 # Repository configuration
 repo_name: MALINA
 repo_url: https://github.com/AntwortEinesLebens/MALINA
@@ -19,11 +10,15 @@ repo_url: https://github.com/AntwortEinesLebens/MALINA
 nav:
   - Home: index.md
   - Installation: installation.md
-  - Configuration: configuration.md
+  - Laboratory file: 
+      - ./configuration/configuration.md
+      - Generate:
+          - ./configuration/configuration.md
+          - Cloudbase-init: ./configuration/cloudbaseinit.md
+          - Cloud-init: ./configuration/cloudinit.md
   - Usage Guide: usage.md
+  - Patches : ./patches/patches.md
   - Troubleshooting: troubleshooting.md
-  - Contributing: contributing.md
-  - Changelog: changelog.md
 
 # Theme configuration
 theme:
@@ -53,8 +48,6 @@ plugins:
   - search:
       separator: '[\s\x00-\x1F]'
       lang: en
-  - social:
-      cards: true
   - glightbox
 
 # Markdown extensions
@@ -78,12 +71,6 @@ markdown_extensions:
       alternate_style: true
   - pymdownx.tasklist:
       custom_checkbox: true
-
-# Extra features
-extra:
-  version:
-    provider: mike
-    default: latest
 
 # Customization
 extra:
