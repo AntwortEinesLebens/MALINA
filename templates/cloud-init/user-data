@@ -1,0 +1,49 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+users:
+{% for user in users %}
+  - name: '{{ user.username }}'
+    plain_text_passwd: '{{ user.password }}'
+    lock_passwd: false
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+{% endfor %}
+{% if packages or scripts %}
+runcmd:
+{% if packages %}
+{% if packages.setup %}
+  - |
+      {{ packages.setup }}
+{% endif %}
+  - |
+      {{ packages.install }}
+{% endif %}
+{% if scripts %}
+  - |
+      run_script() {
+        index="$1"
+        timeout_seconds=300
+
+        set +e
+        printf '%s\n' "scripts index=${index} status=start timeout=${timeout_seconds}"
+
+        timeout "${timeout_seconds}s" /bin/sh
+        exit_code=$?
+
+        if [ "${exit_code}" -eq 0 ]; then
+          printf '%s\n' "scripts index=${index} status=success exit_code=0"
+        elif [ "${exit_code}" -eq 124 ]; then
+          printf '%s\n' "scripts index=${index} status=timeout timeout=${timeout_seconds}"
+        else
+          printf '%s\n' "scripts index=${index} status=failure exit_code=${exit_code}"
+        fi
+
+        return 0
+      }
+{% for script in scripts %}
+      run_script {{ script.index }} <<'SCRIPT_{{ script.index }}'
+{{ script.content }}
+      SCRIPT_{{ script.index }}
+{% endfor %}
+{% endif %}
+{% endif %}
