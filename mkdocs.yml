@@ -13,11 +13,10 @@ nav:
   - Laboratory file: 
       - ./configuration/configuration.md
       - Generate:
-          - ./configuration/configuration.md
           - Cloudbase-init: ./configuration/cloudbaseinit.md
           - Cloud-init: ./configuration/cloudinit.md
   - Usage Guide: usage.md
-  - Patches : ./patches/patches.md
+  - Patches : patches/patches.md
   - Troubleshooting: troubleshooting.md
 
 # Theme configuration
@@ -26,12 +25,10 @@ theme:
   language: en
   font:
     text: Roboto
-    code: Roboto Mono
   features:
     - navigation.instant
     - navigation.tracking
-    - navigation.tabs
-    - navigation.sections
+    - navigation.expand  # Menu latéral ouvert par défaut
     - search.suggest
     - search.highlight
     - content.code.annotate
@@ -75,3 +72,4 @@ markdown_extensions:
 # Customization
 extra:
   generator: false
+
