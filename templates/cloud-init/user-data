@@ -16,7 +16,9 @@ runcmd:
       {{ packages.setup }}
 {% endif %}
   - |
-      {{ packages.install }}
+{% for line in packages.install %}
+      {{ line }}
+{% endfor %}
 {% endif %}
 {% if has_scripts %}
 {% set runner %}
@@ -37,6 +39,7 @@ with open(os.path.join(root, 'scripts.json'), encoding='utf-8') as file:
 for script in manifest['scripts']:
     path = os.path.join(root, script['path'])
     timeout_seconds = script['timeout_seconds']
+    on_failure = script['on_failure']
 
     print(f'scripts path={path} status=start')
 
@@ -46,8 +49,14 @@ for script in manifest['scripts']:
         print(f'scripts path={path} status=success')
     except subprocess.TimeoutExpired:
         print(f'scripts path={path} status=timeout')
+
+        if on_failure == 'fail':
+            raise SystemExit(1)
     except subprocess.CalledProcessError:
         print(f'scripts path={path} status=failure')
+
+        if on_failure == 'fail':
+            raise SystemExit(1)
 PY
 {% endset %}
   - |
