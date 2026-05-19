@@ -3,8 +3,8 @@ package_update: true
 package_upgrade: true
 users:
 {% for user in users %}
-  - name: '{{ user.username }}'
-    plain_text_passwd: '{{ user.password }}'
+  - name: {{ user.username | yaml_escape }}
+    plain_text_passwd: {{ user.password | yaml_escape }}
     lock_passwd: false
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
 {% endfor %}

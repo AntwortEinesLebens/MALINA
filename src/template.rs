@@ -31,6 +31,7 @@ impl Engine {
     pub fn new() -> Result<Self, Template> {
         let mut tera = Tera::default();
         tera.register_filter("powershell_base64_encode", PowershellBase64Encoder);
+        tera.register_filter("yaml_escape", YamlScalarEncoder);
 
         for (name, template) in [
             ("cloud-init/meta-data", Self::CLOUD_INIT_META_DATA_TEMPLATE),
@@ -89,6 +90,22 @@ impl Filter for PowershellBase64Encoder {
             .flat_map(|unit| unit.to_le_bytes())
             .collect::<Vec<_>>();
         let encoded = base64::Engine::encode(&general_purpose::STANDARD, utf16);
+
+        tera::to_value(encoded).map_err(|error| tera::Error::msg(error.to_string()))
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+struct YamlScalarEncoder;
+
+impl Filter for YamlScalarEncoder {
+    fn filter(&self, value: &Value, _: &HashMap<String, Value>) -> tera::Result<Value> {
+        let scalar = value
+            .as_str()
+            .ok_or_else(|| tera::Error::msg("expected string"))?;
+        let encoded = serde_yaml::to_string(scalar)
+            .map_err(|error| tera::Error::msg(error.to_string()))?
+            .to_owned();
 
         tera::to_value(encoded).map_err(|error| tera::Error::msg(error.to_string()))
     }

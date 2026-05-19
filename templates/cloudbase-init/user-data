@@ -1,8 +1,8 @@
 #cloud-config
 users:
 {% for user in users %}
-  - name: '{{ user.username }}'
-    passwd: '{{ user.password }}'
+  - name: {{ user.username | yaml_escape }}
+    passwd: {{ user.password | yaml_escape }}
     groups: ['Administrators']
 {% endfor %}
 {% if packages or has_scripts %}
