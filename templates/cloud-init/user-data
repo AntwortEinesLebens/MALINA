@@ -8,7 +8,7 @@ users:
     lock_passwd: false
     sudo: 'ALL=(ALL) NOPASSWD:ALL'
 {% endfor %}
-{% if packages or scripts %}
+{% if packages or has_scripts %}
 runcmd:
 {% if packages %}
 {% if packages.setup %}
@@ -18,32 +18,39 @@ runcmd:
   - |
       {{ packages.install }}
 {% endif %}
-{% if scripts %}
+{% if has_scripts %}
+{% set runner %}
+root="$(mktemp -d)"
+mount /dev/disk/by-label/cidata "$root"
+
+python3 - "$root" <<'PY'
+import json
+import os
+import subprocess
+import sys
+
+root = sys.argv[1]
+
+with open(os.path.join(root, 'scripts.json'), encoding='utf-8') as file:
+    manifest = json.load(file)
+
+for script in manifest['scripts']:
+    path = os.path.join(root, script['path'])
+    timeout_seconds = script['timeout_seconds']
+
+    print(f'scripts path={path} status=start')
+
+    try:
+        subprocess.run(['/bin/sh', path], check=True, timeout=timeout_seconds)
+
+        print(f'scripts path={path} status=success')
+    except subprocess.TimeoutExpired:
+        print(f'scripts path={path} status=timeout')
+    except subprocess.CalledProcessError:
+        print(f'scripts path={path} status=failure')
+PY
+{% endset %}
   - |
-      run_script() {
-        index="$1"
-        timeout_seconds=300
-
-        set +e
-        printf '%s\n' "scripts index=${index} status=start timeout=${timeout_seconds}"
-
-        timeout "${timeout_seconds}s" /bin/sh
-        exit_code=$?
-
-        if [ "${exit_code}" -eq 0 ]; then
-          printf '%s\n' "scripts index=${index} status=success"
-        elif [ "${exit_code}" -eq 124 ]; then
-          printf '%s\n' "scripts index=${index} status=timeout"
-        else
-          printf '%s\n' "scripts index=${index} status=failure"
-        fi
-
-        return 0
-      }
-{% for script in scripts %}
-      run_script {{ script.index }} <<'SCRIPT_{{ script.index }}'
-{{ script.content }}
-      SCRIPT_{{ script.index }}
-{% endfor %}
+      {{ runner }}
 {% endif %}
 {% endif %}
