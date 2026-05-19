@@ -1,2 +1,2 @@
-instance-id: '{{ identifier }}'
-local-hostname: '{{ hostname }}'
+instance-id: {{ identifier | yaml_escape }}
+local-hostname: {{ hostname | yaml_escape }}
