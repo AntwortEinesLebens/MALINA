@@ -44,3 +44,6 @@ sysinfo = { version = "=0.39.2" }
 virt = { version = "=0.4.3" }
 futures = { version = "=0.3.32" }
 tokio = { version = "=1.52.3", features = ["rt", "sync", "rt-multi-thread"] }
+hadris-iso = { version = "=1.1.2" }
+base64 = { version = "=0.22.1" }
+serde_json = { version = "=1.0.149" }
