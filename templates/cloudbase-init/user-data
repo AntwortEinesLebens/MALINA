@@ -59,6 +59,6 @@ foreach ($script in $manifest.scripts) {
 }
 {% endset %}
   - |
-       powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {{ runner | base64_encode }}
+       powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {{ runner | powershell_base64_encode }}
 {% endif %}
 {% endif %}
