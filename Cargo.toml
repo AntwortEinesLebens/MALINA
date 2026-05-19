@@ -46,4 +46,5 @@ futures = { version = "=0.3.32" }
 tokio = { version = "=1.52.3", features = ["rt", "sync", "rt-multi-thread"] }
 hadris-iso = { version = "=1.1.2" }
 base64 = { version = "=0.22.1" }
+serde_yaml = { version = "=0.9.34" }
 serde_json = { version = "=1.0.149" }
