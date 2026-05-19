@@ -1,0 +1,64 @@
+#cloud-config
+users:
+{% for user in users %}
+  - name: '{{ user.username }}'
+    passwd: '{{ user.password }}'
+    groups: ['Administrators']
+{% endfor %}
+{% if packages or has_scripts %}
+runcmd:
+{% if packages %}
+{% if packages.setup %}
+  - |
+      {{ packages.setup }}
+{% endif %}
+  - |
+      {{ packages.install }}
+{% endif %}
+{% if has_scripts %}
+{% set runner %}
+$volume = Get-Volume -FileSystemLabel CIDATA | Select-Object -First 1
+$root = "$($volume.DriveLetter):\"
+
+function Invoke-Script {
+    param(
+        [string]$Path,
+        [int]$TimeoutSeconds
+    )
+
+    Write-Host "scripts path=${Path} status=start"
+
+    $process = Start-Process -FilePath "powershell" -ArgumentList @(
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        $Path
+    ) -PassThru
+
+    if ($process.WaitForExit($TimeoutSeconds * 1000)) {
+        if ($process.ExitCode -eq 0) {
+            Write-Host "scripts path=${Path} status=success"
+        } else {
+            Write-Host "scripts path=${Path} status=failure"
+        }
+    } else {
+        Stop-Process -Id $process.Id -Force
+
+        Write-Host "scripts path=${Path} status=timeout"
+    }
+
+    return 0
+}
+
+$manifest = Get-Content (Join-Path $root 'scripts.json') -Raw | ConvertFrom-Json
+
+    foreach ($script in $manifest.scripts) {
+    Invoke-Script -Path (Join-Path $root $script.path) -TimeoutSeconds ([int]$script.timeout_seconds)
+}
+{% endset %}
+  - |
+       powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {{ runner | base64_encode }}
+{% endif %}
+{% endif %}
