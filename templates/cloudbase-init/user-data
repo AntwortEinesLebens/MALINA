@@ -54,7 +54,7 @@ function Invoke-Script {
 
 $manifest = Get-Content (Join-Path $root 'scripts.json') -Raw | ConvertFrom-Json
 
-    foreach ($script in $manifest.scripts) {
+foreach ($script in $manifest.scripts) {
     Invoke-Script -Path (Join-Path $root $script.path) -TimeoutSeconds ([int]$script.timeout_seconds)
 }
 {% endset %}
