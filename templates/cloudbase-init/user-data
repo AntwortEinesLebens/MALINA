@@ -44,20 +44,24 @@ function Invoke-Script {
         if ($process.ExitCode -eq 0) {
             Write-Host "scripts path=${Path} status=success"
         } else {
-            Write-Host "scripts path=${Path} status=failure"
-
             if ($OnFailure -eq 'fail') {
+                Write-Host "scripts path=${Path} status=failure"
+
                 return 1
             }
+
+            Write-Host "scripts path=${Path} status=warning reason=failure"
         }
     } else {
         Stop-Process -Id $process.Id -Force
 
-        Write-Host "scripts path=${Path} status=timeout"
-
         if ($OnFailure -eq 'fail') {
+            Write-Host "scripts path=${Path} status=timeout"
+
             return 1
         }
+
+        Write-Host "scripts path=${Path} status=warning reason=timeout"
     }
 
     return 0

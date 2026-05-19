@@ -48,15 +48,19 @@ for script in manifest['scripts']:
 
         print(f'scripts path={path} status=success')
     except subprocess.TimeoutExpired:
-        print(f'scripts path={path} status=timeout')
-
         if on_failure == 'fail':
+            print(f'scripts path={path} status=timeout')
+
             raise SystemExit(1)
+
+        print(f'scripts path={path} status=warning reason=timeout')
     except subprocess.CalledProcessError:
-        print(f'scripts path={path} status=failure')
-
         if on_failure == 'fail':
+            print(f'scripts path={path} status=failure')
+
             raise SystemExit(1)
+
+        print(f'scripts path={path} status=warning reason=failure')
 PY
 {% endset %}
   - |
