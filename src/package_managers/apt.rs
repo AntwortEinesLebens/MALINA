@@ -19,8 +19,9 @@ impl PackageManager for Apt {
         &self,
         operating_system: &OperatingSystem,
     ) -> Option<&'static str> {
-        (operating_system.default_package_manager() != Some(self.as_str()))
-            .then_some("export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install apt")
+        (operating_system.default_package_manager() != Some(self.as_str())).then_some(
+            "export DEBIAN_FRONTEND=noninteractive\napt-get -yq update\napt-get -yq install apt",
+        )
     }
 
     fn install_packages_command(&self, packages: &[&str]) -> Option<String> {

@@ -50,7 +50,7 @@ footer = """
 """
 trim = true
 postprocessors = [
-    { pattern = '<REPO>', replace = "https://github.com/AntwortEinesLebens/MALINA/" },
+  { pattern = '<REPO>', replace = "https://github.com/AntwortEinesLebens/MALINA/" },
 ]
 
 [git]
@@ -58,21 +58,21 @@ conventional_commits = true
 filter_unconventional = false
 split_commits = false
 commit_preprocessors = [
-    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))" },
-    { pattern = '.*', replace_command = 'typos --write-changes - || cat' },
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))" },
+  { pattern = '.*', replace_command = 'typos --write-changes - || cat' },
 ]
 commit_parsers = [
-    { message = "^feat", group = "<!-- 0 -->✨ Features" },
-    { message = "^fix", group = "<!-- 1 -->🐛 Bug Fixes" },
-    { message = "^doc", group = "<!-- 2 -->📚 Documentation" },
-    { message = "^style", group = "<!-- 3 -->💄 Styling" },
-    { message = "^refactor", group = "<!-- 4 -->🔨 Refactor" },
-    { message = "^perf", group = "<!-- 5 -->⚡ Performance" },
-    { message = "^test", group = "<!-- 6 -->🚨 Testing" },
-    { message = "^build", group = "<!-- 7 -->📦 Build" },
-    { message = "^ci", group = "<!-- 8 -->🤖 CI" },
-    { message = "^chore", group = "<!-- 9 -->🧹 Miscellaneous" },
-    { message = "^revert", group = "<!-- 10 -->⏪ Revert" },
+  { message = "^feat", group = "<!-- 0 -->✨ Features" },
+  { message = "^fix", group = "<!-- 1 -->🐛 Bug Fixes" },
+  { message = "^doc", group = "<!-- 2 -->📚 Documentation" },
+  { message = "^style", group = "<!-- 3 -->💄 Styling" },
+  { message = "^refactor", group = "<!-- 4 -->🔨 Refactor" },
+  { message = "^perf", group = "<!-- 5 -->⚡ Performance" },
+  { message = "^test", group = "<!-- 6 -->🚨 Testing" },
+  { message = "^build", group = "<!-- 7 -->📦 Build" },
+  { message = "^ci", group = "<!-- 8 -->🤖 CI" },
+  { message = "^chore", group = "<!-- 9 -->🧹 Miscellaneous" },
+  { message = "^revert", group = "<!-- 10 -->⏪ Revert" },
 ]
 protect_breaking_commits = false
 filter_commits = false

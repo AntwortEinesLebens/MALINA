@@ -263,18 +263,15 @@ async fn deploy_machine(
     let machine_identifier = machine.identifier.value.as_str().to_owned();
     let mut summary = MachineSummary::new(&machine_identifier, machine.name.clone());
 
-    let image_path = match prepare_machine_artifacts(
-        machine,
-        parent,
-        deployment_directory,
-        &machine_identifier,
-    ) {
-        Ok(path) => path,
-        Err(error) => {
-            summary.fail("prepare_machine_artifacts", error.to_string(), "failed");
-            return Err((summary, error));
-        }
-    };
+    let image_path =
+        match prepare_machine_artifacts(machine, parent, deployment_directory, &machine_identifier)
+        {
+            Ok(path) => path,
+            Err(error) => {
+                summary.fail("prepare_machine_artifacts", error.to_string(), "failed");
+                return Err((summary, error));
+            }
+        };
 
     Logger::info(&format!("Creating machine {}", machine_identifier));
 

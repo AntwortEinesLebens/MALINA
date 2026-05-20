@@ -13,13 +13,7 @@ documentation = "https://AntwortEinesLebens.github.io/MALINA/"
 repository = "https://github.com/AntwortEinesLebens/MALINA/"
 readme = "README.md"
 license = "GPL-3.0-or-later"
-keywords = [
-  "security",
-  "virtualization",
-  "analysis",
-  "automation",
-  "cli",
-]
+keywords = ["security", "virtualization", "analysis", "automation", "cli"]
 categories = [
   "command-line-utilities",
   "development-tools",

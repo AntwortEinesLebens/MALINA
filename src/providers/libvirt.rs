@@ -68,12 +68,7 @@ impl Libvirt {
                 });
             }
 
-            let domain_xml = render_domain_xml_internal(
-                &engine,
-                &laboratory,
-                &machine,
-                &image,
-            )?;
+            let domain_xml = render_domain_xml_internal(&engine, &laboratory, &machine, &image)?;
 
             Domain::define_xml(&connection, &domain_xml)
                 .map(|_| ())
@@ -285,10 +280,17 @@ fn lookup_domain_by_name_internal(
             operation: "list_machines",
             identifier: machine_name.to_owned(),
             reason: error.message().to_owned(),
-            remediation: "Confirm libvirt can list domains on this host before retrying the operation.".to_owned(),
+            remediation:
+                "Confirm libvirt can list domains on this host before retrying the operation."
+                    .to_owned(),
         })?
         .into_iter()
-        .find(|domain| domain.get_name().map(|name| name == machine_name).unwrap_or(false));
+        .find(|domain| {
+            domain
+                .get_name()
+                .map(|name| name == machine_name)
+                .unwrap_or(false)
+        });
 
     domain.ok_or_else(|| errors::Provider::MachineNotFound {
         identifier: machine_name.to_owned(),
@@ -401,10 +403,17 @@ fn ensure_network_internal(
             operation: "list_networks",
             identifier: network_name.to_owned(),
             reason: error.message().to_owned(),
-            remediation: "Confirm libvirt can list networks on this host before retrying the operation.".to_owned(),
+            remediation:
+                "Confirm libvirt can list networks on this host before retrying the operation."
+                    .to_owned(),
         })?
         .into_iter()
-        .find(|network| network.get_name().map(|name| name == network_name).unwrap_or(false));
+        .find(|network| {
+            network
+                .get_name()
+                .map(|name| name == network_name)
+                .unwrap_or(false)
+        });
 
     match network {
         Some(network) => {
@@ -493,16 +502,14 @@ fn network_name_from_domain_xml(
     domain: &Domain,
     identifier: &Identifier,
 ) -> Result<Option<String>, errors::Provider> {
-    let xml = domain
-        .get_xml_desc(0)
-        .map_err(|error| {
-            operation_error(
-                "inspect_domain_xml",
-                identifier,
-                error,
-                "Retry after confirming the domain XML is accessible.",
-            )
-        })?;
+    let xml = domain.get_xml_desc(0).map_err(|error| {
+        operation_error(
+            "inspect_domain_xml",
+            identifier,
+            error,
+            "Retry after confirming the domain XML is accessible.",
+        )
+    })?;
 
     let needle = "network='";
     let Some(start) = xml.find(needle) else {
@@ -540,7 +547,9 @@ fn machine_exists_internal(
             operation: "list_machines",
             identifier: machine_name(machine).to_owned(),
             reason: error.message().to_owned(),
-            remediation: "Confirm libvirt can list domains on this host before retrying the operation.".to_owned(),
+            remediation:
+                "Confirm libvirt can list domains on this host before retrying the operation."
+                    .to_owned(),
         })?
         .into_iter()
         .any(|domain| {
