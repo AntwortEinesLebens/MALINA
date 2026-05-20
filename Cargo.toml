@@ -14,13 +14,11 @@ repository = "https://github.com/AntwortEinesLebens/MALINA/"
 readme = "README.md"
 license = "GPL-3.0-or-later"
 keywords = [
-  "malware",
-  "analysis",
-  "laboratory",
   "security",
+  "virtualization",
+  "analysis",
+  "automation",
   "cli",
-  "blueteam",
-  "hypervisors",
 ]
 categories = [
   "command-line-utilities",
