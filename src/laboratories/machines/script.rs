@@ -18,6 +18,13 @@ pub enum OnFailure {
 impl OnFailure {
     const EXPECTED_VALUES: &'static [&'static str] = &["warn", "fail"];
 
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Warn => "warn",
+            Self::Fail => "fail",
+        }
+    }
+
     fn deserialize(on_failure: Spanned<String>) -> Result<Spanned<Self>, DeserError> {
         let value = match on_failure.value.as_str() {
             "warn" => Self::Warn,
@@ -77,6 +84,7 @@ impl Script {
         parent: &Path,
     ) -> Result<(), Validation> {
         self.validate_path(machine_identifier, source_name, source_code, parent)?;
+        self.validate_filename(machine_identifier, source_name, source_code)?;
         self.validate_timeout(machine_identifier, source_name, source_code)?;
 
         Ok(())
@@ -125,6 +133,35 @@ impl Script {
                 span: validation::to_source_span(self.path.span),
                 machine_identifier: machine_identifier.to_owned(),
                 path: path.display().to_string(),
+            });
+        }
+
+        Ok(())
+    }
+
+    fn validate_filename(
+        &self,
+        machine_identifier: &str,
+        source_name: &str,
+        source_code: &str,
+    ) -> Result<(), Validation> {
+        let filename = self
+            .path
+            .value
+            .file_name()
+            .and_then(|file_name| file_name.to_str())
+            .unwrap_or("");
+
+        if filename.is_empty()
+            || !filename.chars().all(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '.' | '-' | '_')
+            })
+        {
+            return Err(Validation::InvalidScriptFilename {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.path.span),
+                machine_identifier: machine_identifier.to_owned(),
+                filename: filename.to_owned(),
             });
         }
 

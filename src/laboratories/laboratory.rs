@@ -2,7 +2,11 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::laboratories::identifier::Identifier;
+use crate::{
+    errors::Template,
+    laboratories::identifier::Identifier,
+    providers::{self, Kvm},
+};
 use toml_span::{
     DeserError, Deserialize, Error, ErrorKind, Spanned, Value, de_helpers::TableHelper,
 };
@@ -43,6 +47,18 @@ pub enum Provider {
 
 impl Provider {
     const EXPECTED_VALUES: &'static [&'static str] = &["kvm"];
+
+    pub fn into_provider(self) -> Result<Box<dyn providers::Provider>, Template> {
+        match self {
+            Self::Kvm => Ok(Box::new(Kvm::new()?)),
+        }
+    }
+
+    pub fn supported_image_extensions(self) -> &'static [&'static str] {
+        match self {
+            Self::Kvm => &["qcow2"],
+        }
+    }
 }
 
 impl<'de> Deserialize<'de> for Provider {

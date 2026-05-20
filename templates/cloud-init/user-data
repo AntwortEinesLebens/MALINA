@@ -10,60 +10,57 @@ users:
 {% endfor %}
 {% if packages or has_scripts %}
 runcmd:
+  - |
+      set -e
 {% if packages %}
 {% if packages.setup %}
-  - |
-      {{ packages.setup }}
+{{ packages.setup | indent(width=6, first=true) }}
 {% endif %}
-  - |
 {% for line in packages.install %}
       {{ line }}
 {% endfor %}
 {% endif %}
 {% if has_scripts %}
-{% set runner %}
-root="$(mktemp -d)"
-mount /dev/disk/by-label/cidata "$root"
+      root="$(mktemp -d)"
+      mount /dev/disk/by-label/cidata "$root"
 
-python3 - "$root" <<'PY'
-import json
-import os
-import subprocess
-import sys
+      python3 - "$root" <<'PY'
+      import json
+      import os
+      import subprocess
+      import sys
 
-root = sys.argv[1]
+      root = sys.argv[1]
 
-with open(os.path.join(root, 'scripts.json'), encoding='utf-8') as file:
-    manifest = json.load(file)
+      with open(os.path.join(root, 'scripts.json'), encoding='utf-8') as file:
+          manifest = json.load(file)
 
-for script in manifest['scripts']:
-    path = os.path.join(root, script['path'])
-    timeout_seconds = script['timeout_seconds']
-    on_failure = script['on_failure']
+      for script in manifest['scripts']:
+          path = os.path.join(root, script['path'])
+          timeout_seconds = script['timeout_seconds']
+          on_failure = script['on_failure']
 
-    print(f'scripts path={path} status=start')
+          print(f'scripts path={path} status=start')
 
-    try:
-        subprocess.run(['/bin/sh', path], check=True, timeout=timeout_seconds)
+          try:
+              subprocess.run(['/bin/sh', path], check=True, timeout=timeout_seconds)
 
-        print(f'scripts path={path} status=success')
-    except subprocess.TimeoutExpired:
-        if on_failure == 'fail':
-            print(f'scripts path={path} status=timeout')
+              print(f'scripts path={path} status=success')
+          except subprocess.TimeoutExpired:
+              if on_failure == 'fail':
+                  print(f'scripts path={path} status=timeout')
 
-            raise SystemExit(1)
+                  raise SystemExit(1)
 
-        print(f'scripts path={path} status=warning reason=timeout')
-    except subprocess.CalledProcessError:
-        if on_failure == 'fail':
-            print(f'scripts path={path} status=failure')
+              print(f'scripts path={path} status=warning reason=timeout')
+          except subprocess.CalledProcessError:
+              if on_failure == 'fail':
+                  print(f'scripts path={path} status=failure')
 
-            raise SystemExit(1)
+                  raise SystemExit(1)
 
-        print(f'scripts path={path} status=warning reason=failure')
-PY
-{% endset %}
-  - |
-      {{ runner }}
+              print(f'scripts path={path} status=warning reason=failure')
+      PY
 {% endif %}
+      shutdown -h now
 {% endif %}

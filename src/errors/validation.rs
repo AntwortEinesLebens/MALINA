@@ -102,15 +102,16 @@ pub enum Validation {
         host_memory_megabyte: u64,
     },
 
-    #[diagnostic(help("Use a supported image extension. Valid extensions: qcow2"))]
-    #[error("Machine '{machine_identifier}' has invalid image extension: '{actual}'")]
+    #[diagnostic(help("Use an image extension supported by the selected provider: {supported}"))]
+    #[error("Machine '{machine_identifier}' has invalid provider image extension: '{actual}'")]
     InvalidImageExtension {
         #[source_code]
         source_code: NamedSource<String>,
-        #[label("`image` must use extension: qcow2")]
+        #[label("`image` extension is not supported by the selected provider")]
         span: SourceSpan,
         machine_identifier: String,
         actual: String,
+        supported: String,
     },
 
     #[diagnostic(help("Provide a non-empty path for the machine image."))]
@@ -167,6 +168,29 @@ pub enum Validation {
         machine_identifier: String,
     },
 
+    #[diagnostic(help(
+        "Use only ASCII letters, digits, dots, dashes, and underscores in usernames."
+    ))]
+    #[error("Machine '{machine_identifier}' has an invalid username: '{username}'")]
+    InvalidUsername {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`username` contains unsupported characters")]
+        span: SourceSpan,
+        machine_identifier: String,
+        username: String,
+    },
+
+    #[diagnostic(help("Use only printable ASCII characters without spaces in passwords."))]
+    #[error("Machine '{machine_identifier}' has a password with unsupported characters")]
+    InvalidPassword {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("`password` contains unsupported characters")]
+        span: SourceSpan,
+        machine_identifier: String,
+    },
+
     #[diagnostic(help("Declare at least one `[[machines.users]]` entry for the machine."))]
     #[error("Machine '{machine_identifier}' must declare at least one user")]
     EmptyUsers {
@@ -196,6 +220,17 @@ pub enum Validation {
         #[label("package name must not be empty")]
         span: SourceSpan,
         machine_identifier: String,
+    },
+
+    #[diagnostic(help("Use package names that do not start with `-`."))]
+    #[error("Machine '{machine_identifier}' has an invalid package name: '{package}'")]
+    InvalidPackageName {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("package name must not start with `-`")]
+        span: SourceSpan,
+        machine_identifier: String,
+        package: String,
     },
 
     #[diagnostic(help(
@@ -247,6 +282,43 @@ pub enum Validation {
         span: SourceSpan,
         machine_identifier: String,
         path: String,
+    },
+
+    #[diagnostic(help("Give each script a unique filename within the machine configuration."))]
+    #[error(
+        "Machine '{machine_identifier}' declares the script filename '{filename}' more than once"
+    )]
+    DuplicateScriptFilename {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("duplicate script filename in this machine")]
+        span: SourceSpan,
+        machine_identifier: String,
+        filename: String,
+    },
+
+    #[diagnostic(help(
+        "Use only ASCII letters, digits, dots, dashes, and underscores in script filenames."
+    ))]
+    #[error("Machine '{machine_identifier}' has invalid script filename: '{filename}'")]
+    InvalidScriptFilename {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("script filename is not normalized")]
+        span: SourceSpan,
+        machine_identifier: String,
+        filename: String,
+    },
+
+    #[diagnostic(help("Use a `.ps1` script file for Windows machines."))]
+    #[error("Machine '{machine_identifier}' has invalid Windows script extension: '{actual}'")]
+    InvalidWindowsScriptExtension {
+        #[source_code]
+        source_code: NamedSource<String>,
+        #[label("Windows scripts must use `.ps1`")]
+        span: SourceSpan,
+        machine_identifier: String,
+        actual: String,
     },
 
     #[diagnostic(help(

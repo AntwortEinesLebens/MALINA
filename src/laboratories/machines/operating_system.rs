@@ -4,7 +4,8 @@
 
 use crate::{
     errors::{Validation, validation},
-    laboratories::machines::packages::Manager,
+    package_managers::PackageManager,
+    seeders::{CloudInit, CloudbaseInit, Seeder},
 };
 use miette::NamedSource;
 use std::path::{Path, PathBuf};
@@ -127,7 +128,6 @@ pub enum OperatingSystem {
 
 impl OperatingSystem {
     const EXPECTED_FAMILIES: &'static [&'static str] = &["linux", "windows"];
-    const SUPPORTED_IMAGE_EXTENSIONS: &'static [&'static str] = &["qcow2"];
 
     fn deserialize_linux(mut table: TableHelper<'_>) -> Result<Self, DeserError> {
         let distribution = table.required_s::<String>("distribution")?;
@@ -149,7 +149,7 @@ impl OperatingSystem {
         Ok(Self::Windows { version, image })
     }
 
-    pub fn distribution_name(&self) -> &'static str {
+    pub fn name(&self) -> &'static str {
         match self {
             Self::Linux {
                 distribution: LinuxDistribution::Debian(_),
@@ -163,22 +163,69 @@ impl OperatingSystem {
         }
     }
 
-    pub fn compatible_managers(&self) -> &'static [Manager] {
+    pub fn seeder(&self) -> Box<dyn Seeder> {
+        match self {
+            Self::Linux { .. } => Box::new(CloudInit),
+            Self::Windows { .. } => Box::new(CloudbaseInit),
+        }
+    }
+
+    pub fn image_path(&self) -> &Path {
+        match self {
+            Self::Linux { image, .. } | Self::Windows { image, .. } => image.value.as_path(),
+        }
+    }
+
+    pub fn default_package_manager(&self) -> Option<&'static str> {
         match self {
             Self::Linux {
                 distribution: LinuxDistribution::Debian(_),
                 ..
-            } => &[Manager::Apt, Manager::Nix],
+            } => Some("apt"),
             Self::Linux {
                 distribution: LinuxDistribution::Fedora(_),
                 ..
-            } => &[Manager::Dnf, Manager::Nix],
-            Self::Windows { .. } => &[Manager::Winget, Manager::Chocolatey],
+            } => Some("dnf"),
+            Self::Windows { .. } => Some("winget"),
         }
     }
 
-    pub fn compatible_managers_display(&self) -> String {
-        validation::format_quoted(self.compatible_managers().iter().map(Manager::as_str))
+    pub fn supported_package_managers(&self) -> &'static [&'static str] {
+        match self {
+            Self::Linux {
+                distribution: LinuxDistribution::Debian(_),
+                ..
+            } => &["apt", "nix"],
+            Self::Linux {
+                distribution: LinuxDistribution::Fedora(_),
+                ..
+            } => &["dnf", "nix"],
+            Self::Windows { .. } => &["winget", "chocolatey"],
+        }
+    }
+
+    pub fn supports_package_manager(&self, package_manager: &dyn PackageManager) -> bool {
+        self.supported_package_managers()
+            .contains(&package_manager.as_str())
+    }
+
+    pub fn compatible_package_managers_display(&self) -> String {
+        validation::format_quoted(
+            [
+                crate::laboratories::machines::packages::Manager::Apt,
+                crate::laboratories::machines::packages::Manager::Dnf,
+                crate::laboratories::machines::packages::Manager::Nix,
+                crate::laboratories::machines::packages::Manager::Winget,
+                crate::laboratories::machines::packages::Manager::Chocolatey,
+            ]
+            .into_iter()
+            .filter(|manager| {
+                let package_manager = manager.into_package_manager();
+
+                self.supports_package_manager(package_manager.as_ref())
+            })
+            .map(|manager| manager.as_str()),
+        )
     }
 
     pub fn validate(
@@ -187,6 +234,7 @@ impl OperatingSystem {
         source_name: &str,
         source_code: &str,
         parent: &Path,
+        supported_image_extensions: &'static [&'static str],
     ) -> Result<(), Validation> {
         let image = match self {
             Self::Linux { image, .. } | Self::Windows { image, .. } => image,
@@ -218,16 +266,20 @@ impl OperatingSystem {
                     span: validation::to_source_span(image.span),
                     machine_identifier: machine_identifier.to_owned(),
                     actual: "(no extension)".to_owned(),
+                    supported: validation::format_quoted(
+                        supported_image_extensions.iter().copied(),
+                    ),
                 });
             }
         };
 
-        if !Self::SUPPORTED_IMAGE_EXTENSIONS.contains(&extension) {
+        if !supported_image_extensions.contains(&extension) {
             return Err(Validation::InvalidImageExtension {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(image.span),
                 machine_identifier: machine_identifier.to_owned(),
                 actual: extension.to_owned(),
+                supported: validation::format_quoted(supported_image_extensions.iter().copied()),
             });
         }
 

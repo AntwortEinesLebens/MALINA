@@ -2,8 +2,12 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+pub mod provider;
+pub mod seeders;
 pub mod state;
 pub mod template;
 pub mod validation;
 
-pub use crate::errors::{state::State, template::Template, validation::Validation};
+pub use crate::errors::{
+    provider::Provider, seeders::Seeders, state::State, template::Template, validation::Validation,
+};

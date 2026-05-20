@@ -95,7 +95,13 @@ impl Configuration {
                 self.machines.value.len()
             ));
 
-            machine.validate(source_name, source_code, parent, &host_resources)?;
+            machine.validate(
+                source_name,
+                source_code,
+                parent,
+                &host_resources,
+                self.laboratory.provider,
+            )?;
 
             let identifier = machine.identifier.value.as_str();
 
@@ -112,5 +118,11 @@ impl Configuration {
         }
 
         Ok(())
+    }
+}
+
+impl Laboratory {
+    pub fn is_isolated_network(&self) -> bool {
+        matches!(self.network, laboratory::Network::Isolated)
     }
 }

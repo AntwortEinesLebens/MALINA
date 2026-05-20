@@ -6,6 +6,7 @@ use crate::{
     errors::{Validation, validation},
     laboratories::{
         identifier::Identifier,
+        laboratory::Provider,
         machines::{
             hardware::{Hardware, HostResources},
             operating_system::OperatingSystem,
@@ -62,6 +63,7 @@ impl Machine {
         source_code: &str,
         parent: &Path,
         host_resources: &HostResources,
+        provider: Provider,
     ) -> Result<(), Validation> {
         let identifier = self.identifier.value.as_str();
 
@@ -72,8 +74,13 @@ impl Machine {
 
         Logger::info("Checking operating system");
 
-        self.operating_system
-            .validate(identifier, source_name, source_code, parent)?;
+        self.operating_system.validate(
+            identifier,
+            source_name,
+            source_code,
+            parent,
+            provider.supported_image_extensions(),
+        )?;
 
         Logger::info(&format!("Checking users ({})", self.users.value.len()));
 
@@ -91,9 +98,64 @@ impl Machine {
         if let Some(scripts) = &self.scripts {
             Logger::info(&format!("Checking scripts ({})", scripts.len()));
 
+            let mut seen_filenames = HashSet::with_capacity(scripts.len());
+
             for script in scripts {
                 script.validate(identifier, source_name, source_code, parent)?;
+                self.validate_windows_script_extension(
+                    script,
+                    identifier,
+                    source_name,
+                    source_code,
+                )?;
+
+                let filename = script
+                    .path
+                    .value
+                    .file_name()
+                    .and_then(|name| name.to_str())
+                    .unwrap_or("")
+                    .trim();
+
+                if !seen_filenames.insert(filename.to_owned()) {
+                    return Err(Validation::DuplicateScriptFilename {
+                        source_code: NamedSource::new(source_name, source_code.to_owned()),
+                        span: validation::to_source_span(script.path.span),
+                        machine_identifier: identifier.to_owned(),
+                        filename: filename.to_owned(),
+                    });
+                }
             }
+        }
+
+        Ok(())
+    }
+
+    fn validate_windows_script_extension(
+        &self,
+        script: &Script,
+        machine_identifier: &str,
+        source_name: &str,
+        source_code: &str,
+    ) -> Result<(), Validation> {
+        if !matches!(self.operating_system, OperatingSystem::Windows { .. }) {
+            return Ok(());
+        }
+
+        let extension = script
+            .path
+            .value
+            .extension()
+            .and_then(|extension| extension.to_str())
+            .unwrap_or("");
+
+        if extension != "ps1" {
+            return Err(Validation::InvalidWindowsScriptExtension {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(script.path.span),
+                machine_identifier: machine_identifier.to_owned(),
+                actual: extension.to_owned(),
+            });
         }
 
         Ok(())

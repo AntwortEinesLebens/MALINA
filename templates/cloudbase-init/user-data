@@ -10,7 +10,7 @@ runcmd:
 {% if packages %}
 {% if packages.setup %}
   - |
-      {{ packages.setup }}
+{{ packages.setup | indent(width=6, first=true) }}
 {% endif %}
   - |
 {% for line in packages.install %}
@@ -18,66 +18,68 @@ runcmd:
 {% endfor %}
 {% endif %}
 {% if has_scripts %}
-{% set runner %}
-$volume = Get-Volume -FileSystemLabel CIDATA | Select-Object -First 1
-$root = "$($volume.DriveLetter):\"
-
-function Invoke-Script {
-    param(
-        [string]$Path,
-        [int]$TimeoutSeconds,
-        [string]$OnFailure
-    )
-
-    Write-Host "scripts path=${Path} status=start"
-
-    $process = Start-Process -FilePath "powershell" -ArgumentList @(
-        "-NoProfile",
-        "-NonInteractive",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-File",
-        $Path
-    ) -PassThru
-
-    if ($process.WaitForExit($TimeoutSeconds * 1000)) {
-        if ($process.ExitCode -eq 0) {
-            Write-Host "scripts path=${Path} status=success"
-        } else {
-            if ($OnFailure -eq 'fail') {
-                Write-Host "scripts path=${Path} status=failure"
-
-                return 1
-            }
-
-            Write-Host "scripts path=${Path} status=warning reason=failure"
-        }
-    } else {
-        Stop-Process -Id $process.Id -Force
-
-        if ($OnFailure -eq 'fail') {
-            Write-Host "scripts path=${Path} status=timeout"
-
-            return 1
-        }
-
-        Write-Host "scripts path=${Path} status=warning reason=timeout"
-    }
-
-    return 0
-}
-
-$manifest = Get-Content (Join-Path $root 'scripts.json') -Raw | ConvertFrom-Json
-
-foreach ($script in $manifest.scripts) {
-    $status = Invoke-Script -Path (Join-Path $root $script.path) -TimeoutSeconds ([int]$script.timeout_seconds) -OnFailure $script.on_failure
-
-    if ($status -ne 0) {
-        exit $status
-    }
-}
-{% endset %}
   - |
-       powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {{ runner | powershell_base64_encode }}
+      powershell -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand {%- filter powershell_base64_encode -%}
+      $volume = Get-Volume -FileSystemLabel CIDATA | Select-Object -First 1
+      $root = "$($volume.DriveLetter):\"
+
+      function Invoke-Script {
+          param(
+              [string]$Path,
+              [int]$TimeoutSeconds,
+              [string]$OnFailure
+          )
+
+          Write-Host "scripts path=${Path} status=start"
+
+          $process = Start-Process -FilePath "powershell" -ArgumentList @(
+              "-NoProfile",
+              "-NonInteractive",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-File",
+              $Path
+          ) -PassThru
+
+          if ($process.WaitForExit($TimeoutSeconds * 1000)) {
+              if ($process.ExitCode -eq 0) {
+                  Write-Host "scripts path=${Path} status=success"
+              } else {
+                  if ($OnFailure -eq 'fail') {
+                      Write-Host "scripts path=${Path} status=failure"
+
+                      return 1
+                  }
+
+                  Write-Host "scripts path=${Path} status=warning reason=failure"
+              }
+          } else {
+              Stop-Process -Id $process.Id -Force
+
+              if ($OnFailure -eq 'fail') {
+                  Write-Host "scripts path=${Path} status=timeout"
+
+                  return 1
+              }
+
+              Write-Host "scripts path=${Path} status=warning reason=timeout"
+          }
+
+          return 0
+      }
+
+      $manifest = Get-Content (Join-Path $root 'scripts.json') -Raw | ConvertFrom-Json
+
+      foreach ($script in $manifest.scripts) {
+          $status = Invoke-Script -Path (Join-Path $root $script.path) -TimeoutSeconds ([int]$script.timeout_seconds) -OnFailure $script.on_failure
+
+          if ($status -ne 0) {
+              exit $status
+          }
+      }
+      shutdown.exe /s /t 0
+      {%- endfilter -%}
 {% endif %}
+  - |
+      shutdown.exe /s /t 0
 {% endif %}

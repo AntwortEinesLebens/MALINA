@@ -85,6 +85,14 @@ impl Packages {
         source_name: &str,
         source_code: &str,
     ) -> Result<(), Validation> {
+        if self.install.value.is_empty() {
+            return Err(Validation::EmptyPackageName {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.install.span),
+                machine_identifier: machine_identifier.to_owned(),
+            });
+        }
+
         for package in &self.install.value {
             if package.value.trim().is_empty() {
                 return Err(Validation::EmptyPackageName {
@@ -93,19 +101,27 @@ impl Packages {
                     machine_identifier: machine_identifier.to_owned(),
                 });
             }
+
+            if package.value.starts_with('-') {
+                return Err(Validation::InvalidPackageName {
+                    source_code: NamedSource::new(source_name, source_code.to_owned()),
+                    span: validation::to_source_span(package.span),
+                    machine_identifier: machine_identifier.to_owned(),
+                    package: package.value.clone(),
+                });
+            }
         }
 
-        if !operating_system
-            .compatible_managers()
-            .contains(&self.manager.value)
-        {
+        let package_manager = self.manager.value.into_package_manager();
+
+        if !operating_system.supports_package_manager(package_manager.as_ref()) {
             return Err(Validation::IncompatibleManager {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.manager.span),
                 machine_identifier: machine_identifier.to_owned(),
                 manager: self.manager.value.as_str().to_owned(),
-                distribution: operating_system.distribution_name().to_owned(),
-                compatible_managers: operating_system.compatible_managers_display(),
+                distribution: operating_system.name().to_owned(),
+                compatible_managers: operating_system.compatible_package_managers_display(),
             });
         }
 

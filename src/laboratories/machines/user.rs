@@ -24,6 +24,16 @@ impl<'de> Deserialize<'de> for User {
 }
 
 impl User {
+    fn is_valid_username(value: &str) -> bool {
+        value
+            .bytes()
+            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'-' | b'_'))
+    }
+
+    fn is_valid_password(value: &str) -> bool {
+        value.bytes().all(|byte| (b'!'..=b'~').contains(&byte))
+    }
+
     pub fn validate(
         &self,
         machine_identifier: &str,
@@ -50,6 +60,15 @@ impl User {
             });
         }
 
+        if !Self::is_valid_username(&self.username.value) {
+            return Err(Validation::InvalidUsername {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.username.span),
+                machine_identifier: machine_identifier.to_owned(),
+                username: self.username.value.clone(),
+            });
+        }
+
         Ok(())
     }
 
@@ -61,6 +80,14 @@ impl User {
     ) -> Result<(), Validation> {
         if self.password.value.trim().is_empty() {
             return Err(Validation::EmptyPassword {
+                source_code: NamedSource::new(source_name, source_code.to_owned()),
+                span: validation::to_source_span(self.password.span),
+                machine_identifier: machine_identifier.to_owned(),
+            });
+        }
+
+        if !Self::is_valid_password(&self.password.value) {
+            return Err(Validation::InvalidPassword {
                 source_code: NamedSource::new(source_name, source_code.to_owned()),
                 span: validation::to_source_span(self.password.span),
                 machine_identifier: machine_identifier.to_owned(),

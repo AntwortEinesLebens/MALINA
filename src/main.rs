@@ -7,7 +7,9 @@ mod commands;
 mod errors;
 mod laboratories;
 mod logger;
+mod package_managers;
 mod providers;
+mod seeders;
 mod state;
 mod template;
 

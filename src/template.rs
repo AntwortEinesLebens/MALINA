@@ -95,6 +95,13 @@ impl Filter for PowershellBase64Encoder {
     }
 }
 
+mod yaml {
+    v_escape::escape! {
+        b'\'' -> "''",
+        b'\n' -> "\n"
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 struct YamlScalarEncoder;
 
@@ -103,9 +110,11 @@ impl Filter for YamlScalarEncoder {
         let scalar = value
             .as_str()
             .ok_or_else(|| tera::Error::msg("expected string"))?;
-        let encoded = serde_yaml::to_string(scalar)
-            .map_err(|error| tera::Error::msg(error.to_string()))?
-            .to_owned();
+        let mut encoded = String::with_capacity(scalar.len() + 2);
+
+        encoded.push('\'');
+        yaml::escape_string(scalar, &mut encoded);
+        encoded.push('\'');
 
         tera::to_value(encoded).map_err(|error| tera::Error::msg(error.to_string()))
     }
