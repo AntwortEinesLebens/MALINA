@@ -59,6 +59,11 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 ## ⚠️ Disclaimer
 
+At this stage, this is closer to a proof of concept, and the code is still rough
+because of the [commit from hell] and AI-generated changes. It will take us some
+time to refactor it completely, but we are happy to say that it works in
+practice, not just in theory.
+
 This project is currently under heavy development. Features may be incomplete,
 unstable, or subject to change without notice. It is not recommended for
 production use at this time. Use at your own risk and expect breaking changes
@@ -90,7 +95,7 @@ Setting up a malware analysis lab is a time-consuming, error-prone process.
 Making it resistant to detection adds another layer of complexity. While
 automation scripts can help, they're often custom-made, difficult to share,
 and hard to maintain. [MALINA] aims to make malware analysis labs more
-accessible, reproducible, and disposable—so you can focus on analyzing
+accessible, reproducible, and disposable, so you can focus on analyzing
 malware, not building environments.
 
 ## 🚀 Getting started
@@ -116,13 +121,13 @@ add it to your shell's configuration file:
 
 <!-- markdownlint-disable-next-line line-length -->
 
-| Shell    | Command                                    |
-| -------- | ------------------------------------------ |
-| Bash     | `malina completions bash >> ~/.bashrc`     |
-| Elvish   | `malina completions elvish >> ~/.config/elvish/rc.elv` |
-| Fish     | `malina completions fish > ~/.config/fish/completions/malina.fish` |
+| Shell | Command |
+| ---------- | ------------------------------------------------------------------ |
+| Bash | `malina completions bash >> ~/.bashrc` |
+| Elvish | `malina completions elvish >> ~/.config/elvish/rc.elv` |
+| Fish | `malina completions fish > ~/.config/fish/completions/malina.fish` |
 | PowerShell | `malina completions powershell >> $PROFILE` |
-| Zsh      | `malina completions zsh >> ~/.zshrc`       |
+| Zsh | `malina completions zsh >> ~/.zshrc` |
 
 ### 🥷 Quick examples
 
@@ -155,6 +160,7 @@ love your help with any kind of work.
 Distributed under the [GPL 3.0 or later] license.
 
 [cargo]: https://doc.rust-lang.org/stable/cargo/
+[commit from hell]: https://github.com/AntwortEinesLebens/MALINA/commit/219d98d48142c895b669694ba6ba2ffa8c70ba6f
 [crates.io]: https://crates.io/
 [gpl 3.0 or later]: ./LICENSES/GPL-3.0-or-later.txt
 [installation section]: https://AntwortEinesLebens.github.io/MALINA/installation/
