@@ -6,7 +6,7 @@
 name = "malina"
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.88.0"
+rust-version = "1.95.0"
 authors = ["The MALINA development team"]
 description = "Create replicable and unique malware analysis laboratories from configuration"
 documentation = "https://AntwortEinesLebens.github.io/MALINA/"
@@ -43,7 +43,12 @@ regex = { version = "=1.12.3" }
 sysinfo = { version = "=0.39.2" }
 virt = { version = "=0.4.3" }
 futures = { version = "=0.3.32" }
-tokio = { version = "=1.52.3", features = ["rt", "sync", "rt-multi-thread", "signal"] }
+tokio = { version = "=1.52.3", features = [
+  "rt",
+  "sync",
+  "rt-multi-thread",
+  "signal",
+] }
 hadris-iso = { version = "=1.1.2" }
 base64 = { version = "=0.22.1" }
 serde_json = { version = "=1.0.149" }
