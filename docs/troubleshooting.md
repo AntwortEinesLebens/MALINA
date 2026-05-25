@@ -242,7 +242,6 @@ When reporting bugs, include:
 
 - MALINA version (`malina --version`)
 - Operating system and version
-- Output of `malina doctor`
 - Relevant configuration snippets (remove sensitive data)
 - Error messages and stack traces
 - Steps to reproduce the issue

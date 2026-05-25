@@ -25,11 +25,12 @@ provider = "kvm"          # Virtualization provider (currently only KVM supporte
 
 ### Network Modes
 
-MALINA supports different network isolation levels:
+MALINA will supports different network isolation levels (in the future):
 
-- **`isolated`**: VMs have no external network access (default for security)
-- **`private`**: VMs can communicate with each other but not externally
-- **`public`**: Full network connectivity (not recommended for malware analysis)
+- **`isolated`**: VMs have no external network access 
+- **`preserve`**: No modifications, so Full network connectivity (by default)
+
+Note that the VMs need to have Internet connection for installation. The network will be, after that, automatically modified to use the network parameter in the configuration file.
 
 ## Machine Configuration
 
@@ -43,8 +44,8 @@ identifier = "analysis-vm"  # Unique identifier within this config
 name = "Analysis VM"        # Display name
 
 [machines.hardware]
-cpus = 2                    # Number of CPU cores (default: 1)
-memory_megabyte = 4096      # Memory in MB (default: 512)
+cpus = 2                    # Number of CPU cores (Mandatory)
+memory_megabyte = 4096      # Memory in MB (Mandatory)
 ```
 
 ### Operating System
@@ -59,7 +60,7 @@ version = "13"             # OS version (e.g., "12", "13", "14")
 
 # For Windows:
 family = "windows"
-version = "11"             # e.g., "10", "11"
+version = "11"             # e.g., "11"
 ```
 
 ### Disk Image
@@ -92,7 +93,7 @@ Install packages on Linux VMs:
 
 ```toml
 [machines.packages]
-manager = "apt"           # or "dnf", "pacman", etc.
+manager = "apt"           # "dnf", "apt", "nix", "chocolatey" and "winget" are the only ones supported for the moment
 install = [               # List of package names
     "ghidra",
     "radare2",
@@ -108,7 +109,7 @@ Execute PowerShell scripts on Windows VMs:
 ```toml
 [[machines.scripts]]
 path = "./scripts/disable-defender.ps1"
-timeout_seconds = 800     # Maximum execution time in seconds
+#timeout_seconds = 800     # Maximum execution time in seconds (Will be supported in the future)
 on_failure = "warn"       # or "error", "ignore"
 ```
 
@@ -169,7 +170,7 @@ install = ["Microsoft.WinDbg"]
 
 [[machines.scripts]]
 path = "./scripts/disable-defender.ps1"
-timeout_seconds = 800
+#timeout_seconds = 800
 on_failure = "warn"
 ```
 

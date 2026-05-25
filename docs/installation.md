@@ -8,8 +8,7 @@ Before installing MALINA, ensure you have the following:
 
 - **Rust toolchain** (Cargo) - [Install Rust](https://www.rust-lang.org/tools/install)
 - **KVM/QEMU** for virtualization support
-  - Linux: `sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils`
-  - macOS: Install via Homebrew or use VirtualBox as an alternative provider
+  - Linux: `sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils libvirt-devel`
 
 ## Installation Methods
 
@@ -30,15 +29,6 @@ To build from source, clone the repository and compile:
 ```sh
 git clone https://github.com/AntwortEinesLebens/MALINA.git
 cd MALINA
-cargo build --release
-sudo cp target/release/malina /usr/local/bin/
-```
-
-### Method 3: Development Installation
-
-For development or testing with the latest features:
-
-```sh
 cargo install --path .
 ```
 
@@ -92,7 +82,7 @@ Remove the project files
 When a new version is available, update using:
 
 ```sh
-cargo install --force malina
+cargo install --locked malina
 ```
 
 Or check for updates on [GitHub Releases](https://github.com/AntwortEinesLebens/MALINA/releases).
