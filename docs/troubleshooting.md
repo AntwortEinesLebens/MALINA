@@ -6,9 +6,7 @@ This guide helps you resolve common issues with MALINA.
 
 | Issue | Command to Run |
 |-------|---------------|
-| Check system readiness | `malina doctor` |
 | Validate configuration | `malina validate config.toml` |
-| Diagnose deployment issues | `malina diagnose lab-name` |
 | View verbose errors | `malina -v deploy config.toml` |
 
 ## Installation Issues
@@ -189,12 +187,6 @@ qemu-img convert -f raw -O qcow2 source.raw dest.qcow2
 
 **Solution**:
 ```sh
-# Diagnose the specific lab
-malina diagnose your-lab-name
-
-# Check logs in MALINA config directory
-cat ~/.config/malina/logs/*.log
-
 # Try starting manually with libvirt CLI
 virsh list --all
 virsh start your-vm-name
@@ -239,80 +231,10 @@ virsh net-dhcp-leases default  # Check for unexpected leases
 
 **Solution**:
 ```sh
-# Force stop the lab (graceful shutdown may not work)
-malina laboratories destroy your-lab-name
-
-# Or use libvirt directly
+# use libvirt directly
 virsh destroy your-vm-name
 virsh undefine your-vm-name --remove-all-storage
 ```
-
-### Slow performance
-
-**Problem**: Laboratory runs slower than expected.
-
-**Solution**:
-1. Check for competing processes: `top` or `htop`
-2. Verify CPU pinning is not causing issues
-3. Ensure disk I/O is not bottlenecked (use SSD if possible)
-4. Reduce VM resource allocation in configuration
-
-### Package installation failures
-
-**Problem**: Configured packages fail to install.
-
-**Solution**:
-```sh
-# Check package manager logs
-journalctl -xe | grep apt  # or dnf, pacman depending on distro
-
-# Verify package availability
-apt search <package-name>   # or equivalent for your distro
-
-# Update package lists before installation
-sudo apt update
-```
-
-## Diagnostic Commands
-
-### Get detailed system information
-
-```sh
-# Full system check
-malina doctor -v
-
-# Check specific components
-dmesg | grep kvm           # Kernel messages about KVM
-systemctl status libvirtd  # Libvirt service status
-qemu-system-x86_64 --version  # QEMU version
-```
-
-## Common Error Messages
-
-### "Failed to connect to libvirt"
-
-**Cause**: Libvirt daemon not running or connection refused.
-
-**Fix**: `sudo systemctl start libvirtd` and verify with `systemctl status libvirtd`
-
-### "Cannot allocate memory"
-
-**Cause**: System out of RAM or swap space exhausted.
-
-**Fix**: Close other applications, add swap space, or reduce VM memory allocation
-
-### "Permission denied: /dev/kvm"
-
-**Cause**: User lacks access to KVM device.
-
-**Fix**: Add user to libvirt group: `sudo usermod -aG libvirt $USER`
-
-### "Disk image is locked"
-
-**Cause**: Another process has the disk image open.
-
-**Fix**: Find and close the process, or use a different image path
-
 
 ## Reporting Bugs
 

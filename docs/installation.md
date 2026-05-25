@@ -66,33 +66,6 @@ Verify the installation by checking the version:
 malina --version
 ```
 
-## Troubleshooting
-
-### KVM/QEMU Not Found
-
-If you encounter errors related to virtualization, ensure KVM modules are loaded:
-
-```sh
-# Check if KVM is available
-kvm-ok
-
-# Load kernel modules (Linux)
-sudo modprobe kvm
-sudo modprobe kvm-intel  # or kvm-amd for AMD CPUs
-```
-
-### Permission Issues
-
-MALINA may require elevated privileges to create virtual machines. You can either:
-
-1. Use `sudo` when running MALINA commands
-2. Add your user to the libvirt group (Linux):
-
-```sh
-sudo usermod -aG libvirt $USER
-newgrp libvirt
-```
-
 ## Uninstallation
 
 To remove MALINA from your system:

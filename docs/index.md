@@ -50,13 +50,11 @@ SPDX-License-Identifier: CC0-1.0
 # Install MALINA
 cargo install malina
 
+# Validate your configuration file
+malina validate lab-config.toml
+
 # Deploy a laboratory from configuration
 malina deploy lab-config.toml
-
-# Manage your laboratories
-malina laboratories list
-malina laboratories start my-lab
-malina laboratories stop my-lab
 ```
 
 ## ⚠️ Disclaimer
