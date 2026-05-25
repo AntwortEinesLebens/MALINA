@@ -83,11 +83,11 @@ simple configuration file, [MALINA] automates the deployment of virtual machines
 pre-configured with analysis tools, anti-detection patches, and realistic
 system activity.
 
-Each laboratory built with [MALINA] is both reproducible and unique. Reproducible means
-that the same configuration yields the same toolset and patches. Unique means
-that each deployment generates a distinct system footprint to prevent
-fingerprinting. Think of it as infrastructure as code tailored specifically for
-malware analysis workflows.
+Each laboratory built with [MALINA] is both reproducible and unique.
+Reproducible means that the same configuration yields the same toolset and
+patches. Unique means that each deployment generates a distinct system footprint
+to prevent fingerprinting. Think of it as infrastructure as code tailored
+specifically for malware analysis workflows.
 
 ### ❓ Why
 
@@ -119,7 +119,7 @@ cargo install malina
 To enable shell autocompletion, run the appropriate command for your shell and
 add it to your shell's configuration file:
 
-<!-- markdownlint-disable-next-line line-length -->
+<!-- markdownlint-disable line-length -->
 
 | Shell | Command |
 | ---------- | ------------------------------------------------------------------ |
@@ -128,6 +128,8 @@ add it to your shell's configuration file:
 | Fish | `malina completions fish > ~/.config/fish/completions/malina.fish` |
 | PowerShell | `malina completions powershell >> $PROFILE` |
 | Zsh | `malina completions zsh >> ~/.zshrc` |
+
+<!-- markdownlint-enable line-length -->
 
 ### 🥷 Quick examples
 
