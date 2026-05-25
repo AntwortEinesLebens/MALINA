@@ -43,5 +43,5 @@ tokio = { version = "=1.52.3", features = [
 ] }
 hadris-iso = { version = "=1.1.2" }
 base64 = { version = "=0.22.1" }
-serde_json = { version = "=1.0.149" }
+serde_json = { version = "=1.0.150" }
 v_escape = { version = "=0.19.0", features = ["string"] }
